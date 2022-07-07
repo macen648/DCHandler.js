@@ -1,0 +1,30 @@
+{
+  "name": "dchandler1.0",
+  "version": "1.0.0",
+  "description": "Discord bot handler",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/macen648/DCHandler"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "handler",
+    "dchandler",
+    "discord.js",
+    "command"
+  ],
+  "author": "Macen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/macen648/DCHandler/issues"
+  },
+  "homepage": "https://github.com/macen648/DCHandler",
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "moment": "^2.29.3",
+    "mongoose": "^6.2.9"
+  }
+}
