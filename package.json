@@ -23,8 +23,10 @@
   },
   "homepage": "https://github.com/macen648/DCHandler",
   "dependencies": {
+    "chalk": "^4.1.2",
     "discord.js": "^13.6.0",
     "moment": "^2.29.3",
-    "mongoose": "^6.2.9"
+    "mongoose": "^6.2.9",
+    "pretty-ms": "^7.0.1"
   }
 }

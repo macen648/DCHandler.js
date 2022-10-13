@@ -1,6 +1,4 @@
-const guildSchema = require('./util/guildModel')
-const mongo = require('../src/util/mongo')
-const Log = require('./log')
+const Log = require('./utils/DCH_log')
 
 class MessageHandler{
     constructor(client, options = {}){
@@ -11,7 +9,7 @@ class MessageHandler{
 
         this.options = options
 
-        this.PREFIX
+        this.PREFIX = this.options.PREFIX
 
     }
 
@@ -19,21 +17,6 @@ class MessageHandler{
         this.client.on('messageCreate', async message => {
             if (message.author.bot) return
             if (message.channel.type === 'dm') return
-
-            if (!this.options.mongoPath) this.PREFIX = this.options.PREFIX
-            else {
-                await mongo(this.options.mongoPath).then(async mongoose => {
-                    try {
-                        const result = await guildSchema.findOne({
-                            _id: message.guild.id
-                        })
-                        this.PREFIX = result ? result.PREFIX : this.options.PREFIX
-                    } finally {
-                        mongoose.connection.close()
-                    }
-                })
-
-            }
 
             if (message.content.indexOf(this.PREFIX) !== 0) return
 
@@ -43,8 +26,8 @@ class MessageHandler{
             const cmd = this.client.commands.get(command) || this.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command))
 
             if (cmd) cmd.execute(this.client, message, args).catch(error => {
-                this.Log.lightError('ERROR', `Command '${command}' exited with Error`)
-                this.Log.lightError('ERROR', error)
+                this.Log.type('ERROR', '#FF0000', `Command '${command}' exited with Error`)
+                this.Log.type('ERROR', '#FF0000', error)
             })
         })
     }

@@ -1,7 +1,9 @@
+const prettyMilliseconds = require("pretty-ms")
 const Discord = require('discord.js')
 const path = require("path")
 const fs = require("fs")
-const Log = require('./log')
+
+const Log = require('./utils/DCH_log')
 
 class CommandLoader{
     constructor(client, commandPath, options = {}){
@@ -20,137 +22,67 @@ class CommandLoader{
 
     }   
 
-    checkDirIsEmpty(path){
-        const empty = fs.readdirSync(`${path}`)
-        if(empty === 0) return true
-        else return false
+    loadCommands(){
+        this.registerDirectory()
     }
+    
+    registerCommand(dir, file, single) {
+        const filePath = path.join(require.main.path, `${this.commandPath}`, file)
 
-    registerCommand(dir, file) {
-        var command 
+        var command = {}
 
-        if (dir == file) command = require(path.join(require.main.path, `${this.commandPath}`, file))
-        else command = require(path.join(require.main.path, `${this.commandPath}/${dir}`, file))
+        if (single) command = require(filePath)
+        else command = require(filePath)
         
         try {
+            
+            if (Object.keys(command).length === 0) return this.Log.warn(` Command file ${file} is empty.\nSkipping.`)
             if (!command.name) Object.assign(command, { name: file.split('.')[0] })
 
+            if (this.client.commands.some(cmds => cmds.name === command.name)){
+                this.Log.warn(`  -> Command with the name ${command.name.toLowerCase()} already exists, Loaded anyways.`)  
+                return this.client.commands.set(command.name.toLowerCase(), command)
+            } 
+            
             this.client.commands.set(command.name.toLowerCase(), command)
-            this.Log.message(`🟩 -> Loaded command ${command.name.toLowerCase()}`)
+            this.Log.type('CMD', '#00FF00', ` -> Loaded command '${command.name.toLowerCase()}'`)
 
         } catch (error) {
-            this.Log.lightError('ERROR', `🟥 Command file '${file.split('.')[0]}' Had a error loading.`)
-            this.Log.lightError('ERROR', error)
+            this.Log.type('ERROR', '#FF0000', `Command file '${file.split('.')[0]}' Had a error loading.\n${error}`)
         } 
 
-        if (dir == file) delete require.cache[require.resolve(path.join(require.main.path, `${this.commandPath}`, file))]
+        if (single) delete require.cache[require.resolve(path.join(require.main.path, `${this.commandPath}`, file))]
         else delete require.cache[require.resolve(path.join(require.main.path, `${this.commandPath}/${dir}`, file))]
 
         return command
     }
 
-    loadCommands(){
-        this.Log.message(`🔄 Loading commands...`)
+    registerDirectory(){
+        var startTime = performance.now()
+        const dir = fs.readdirSync(`${this.commandPath}`).filter(file => file.endsWith(".js"))
 
-        var commandCount = 0
-        var loadedCommands = 0
-        var i = 0
-
-        const localDir = fs.readdirSync(`${this.commandPath}`).filter(file => file.endsWith(".js"))
-        const empty = this.checkDirIsEmpty(this.commandPath)
-
-        commandCount = localDir.length
-
-        fs.readdirSync(`${this.commandPath}`).forEach(dirs => {
+        this.Log.info(`Loading commands...`)
         
+        if (fs.readdirSync(this.commandPath) == '') return this.Log.warn(`Command folder is empty.\nNo commands loaded.`)
 
-            if(dirs == localDir[i]){
-                this.registerCommand(dirs, localDir[i])
-                loadedCommands++
-                i++
-                return
+        var i = 0
+        fs.readdirSync(`${this.commandPath}`).forEach(dirs => {
+
+            if(dirs == dir[i]){
+                this.registerCommand(dirs, dir[i], 1)
+                return i++
             }
         
             const commands = fs.readdirSync(`${this.commandPath}/${dirs}`).filter(file => file.endsWith(".js"))
-            commandCount += commands.length
         
             if(commands.length === 0) return this.Log.warn(`Folder ${dirs} is empty.`)
 
-            for (const file of commands) {
-                this.registerCommand(dirs, file)
-                loadedCommands++
-            }
+            for (const file of commands) this.registerCommand(dirs, file)
+            
         })
 
-        if (empty) this.Log.warn(`Command folder empty.`)
-
-        if (empty) this.Log.message(`No commands loaded.`)
-        else this.Log.message(`👌 ${commandCount}/${loadedCommands} Commands loaded.`)
-         
+        this.Log.info(`Commands loaded in ${prettyMilliseconds(performance.now() - startTime)}`)
     }
-
-    //TODO: refactor this lol
-    // loadEvents(){
-    //     this.Log.message(`Loading events...`)
-
-    //     const localDir = fs.readdirSync(`${this.eventPath}`).filter(file => file.endsWith(".js"))
-    //     const empty = fs.readdirSync(`${this.eventPath}`)
-    //     var eventCount = localDir.length
-    //     var loadedEvents = 0
-
-    //     var i = 0
-    //     fs.readdirSync(`${this.eventPath}`).forEach(dirs => {
-    //         if (dirs == localDir[i]) {
-
-    //             const event = require(path.join(require.main.path, `${this.eventPath}`, localDir[i]))
-
-    //             try {
-
-    //                 this.client.on(localDir[i].split('.')[0], event.bind(null, this.client))
-
-    //                 this.Log.message(`🟩 -> Loaded event ${localDir[i].split('.')[0]}`)
-    //                 loadedEvents++
-
-    //             } catch (error) {
-    //                 this.Log.lightError('ERROR', `🟥 Command file '${localDir[i].split('.')[0]}' Had a error loading.`)
-    //                 this.Log.lightError('ERROR', error)
-    //             }
-
-    //             delete require.cache[require.resolve(path.join(require.main.path, `${this.eventPath}`, localDir[i]))]
-
-    //             i++
-    //             return
-    //         }
-
-    //         const events = fs.readdirSync(`${this.eventPath}/${dirs}`).filter(file => file.endsWith(".js"))
-    //         eventCount += events.length
-
-    //         if (events.length === 0) return this.Log.warn(`Folder ${dirs} is empty.`)
-
-    //         for (const file of events) {
-
-    //             const event = require(path.join(require.main.path, `${this.eventPath}/${dirs}`, file))
-
-    //             try {
-    //                 this.client.on(file.split('.')[0], event.bind(null, this.client))
-    //                 this.Log.message(`🟩-> Loaded event ${file.split('.')[0]}`)
-    //                 loadedEvents++
-    //             } catch (error) {
-    //                 this.Log.lightError('ERROR', `🟥 Event file '${file.split('.')[0]}' Had a error loading.`)
-    //                 this.Log.lightError('ERROR', error)
-
-    //             }
-
-    //             delete require.cache[require.resolve(path.join(require.main.path, `${this.eventPath}/${dirs}`, file))]
-    //         }
-    //     })
-
-    //     if (empty.length === 0) this.Log.warn(`Event folder empty.`)
-
-    //     if (empty.length === 0) this.Log.message(`No events loaded.`)
-    //     else this.Log.message(`👌 ${eventCount}/${loadedEvents} Events loaded.`)
-        
-    // }
 }
 
 module.exports = CommandLoader
