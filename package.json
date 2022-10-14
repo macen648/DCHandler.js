@@ -1,6 +1,6 @@
 {
   "name": "dchandler1.0",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Discord bot handler",
   "main": "index.js",
   "scripts": {},
@@ -24,9 +24,8 @@
   "homepage": "https://github.com/macen648/DCHandler",
   "dependencies": {
     "chalk": "^4.1.2",
-    "discord.js": "^13.6.0",
+    "discord.js": "^14.6.0",
     "moment": "^2.29.3",
-    "mongoose": "^6.2.9",
     "pretty-ms": "^7.0.1"
   }
 }

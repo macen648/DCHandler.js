@@ -1,4 +1,4 @@
-const Log = require('./utils/DCH_log')
+const Log = require('./utils/DCH_Log')
 
 class Ready{
     constructor(client, options){
@@ -10,12 +10,8 @@ class Ready{
         this.Log = new Log(options)
 
         client.on('ready', client => {
-            
-            if (!this.options.noShowActivity) client.user.setActivity(this.options.customActivity.name, { type: `${this.options.customActivity.type}` })
-            else client.user.setPresence({ activity: null })
-
-            this.Log.info(`🤖 ${client.user.tag} / Client id#${client.user.id} is online!`)
-            this.Log.info(`Now listening for commands with default prefix: ${this.options.PREFIX}`)
+            this.Log.message(`🤖 ${client.user.tag} / Client id#${client.user.id} is online!`)
+            this.Log.message(`Now listening for commands with default prefix: ${this.options.PREFIX}`)
         })   
     }
 }

@@ -1,4 +1,4 @@
-const Log = require('./utils/DCH_log')
+const Log = require('./utils/DCH_Log')
 
 class MessageHandler{
     constructor(client, options = {}){
@@ -26,8 +26,8 @@ class MessageHandler{
             const cmd = this.client.commands.get(command) || this.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command))
 
             if (cmd) cmd.execute(this.client, message, args).catch(error => {
-                this.Log.type('ERROR', '#FF0000', `Command '${command}' exited with Error`)
-                this.Log.type('ERROR', '#FF0000', error)
+                this.Log.custom('ERROR', '#FF0000', `Command '${command}' exited with Error`)
+                this.Log.custom('ERROR', '#FF0000', error)
             })
         })
     }
