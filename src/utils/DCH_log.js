@@ -30,10 +30,6 @@ class DCH_Log {
         return this
     }
 
-    error(type, message) {
-        throw new Error(`[${type}] ${message}`)
-    }
-
     custom(type, color, message) {
         if (this.showLogs === false) return
 

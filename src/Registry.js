@@ -4,7 +4,7 @@ const path = require("path")
 const fs = require("fs")
 
 const Log = require('./utils/DCH_Log')
-
+const { DCH_CMD_ERROR } = require('./utils/DCH_ERROR')
 class Registry {
     constructor(client, commandPath, options = {}){
         
@@ -28,7 +28,7 @@ class Registry {
         this.Log.message(`Loading commands...`)
         const result = this.registerDirectory(this.commandPath, this.registerCommand)
 
-        if(result === "empty") return this.Log.warn(`Command folder is empty.\nNo commands loaded.`)
+        if(result === "empty") return this.Log.warn(`Commands folder is empty.\nNo commands loaded.`)
         else this.Log.info(`Commands loaded in ${prettyMilliseconds(performance.now() - startTime)}`)
 
         return result
@@ -48,28 +48,37 @@ class Registry {
     }   
 
     registerDirectory(path, registerFile) {
-        const dir = fs.readdirSync(path).filter(file => file.endsWith(".js"))
+
+        function subDir(path, _this){
+            const dirs = fs.readdirSync(path, { withFileTypes: true }).filter(item => item.isDirectory()).map(item => item.name)
+            if (!dirs) return 
+
+            for (const dir of dirs) {
+                if (fs.readdirSync(`${path}/${dir}`) == '') return _this.Log.warn(`Folder ${dir} is empty.`)
+                subDir(`${path}/${dir}`, _this)
+                fs.readdirSync(`${path}/${dir}`).filter(file => file.endsWith(".js")).forEach(file => {
+                     registerFile(file, `${path}/${dir}`, _this)
+                })
+            }
+            
+        }
 
         if (fs.readdirSync(path) == '') return "empty"
 
-        var i = 0
-        fs.readdirSync(path).forEach(dirs => {
+        
+    
+        fs.readdirSync(`${path}`).filter(file => file.endsWith(".js")).forEach(file => {
+            registerFile(file, `${path}`, this)
 
-            if (dirs == dir[i]) {
-                registerFile(dir[i], path, this)
-                return i++
-            }
-
-            const files = fs.readdirSync(`${path}/${dirs}`).filter(file => file.endsWith(".js"))
-
-            if (files.length === 0) return this.Log.warn(`Folder ${dirs} is empty.`)
-
-            for (const file of files) registerCommand(file)
         })
+        
+        subDir(path, this)
+        
         return "success"
     }
 
     registerCommand(file, _filePath, _this) {
+
         const filePath = path.join(require.main.path, _filePath, file)
 
         var command = require(filePath)
@@ -79,7 +88,7 @@ class Registry {
             if (!command.name) Object.assign(command, { name: file.split('.')[0] })
 
             if (_this.client.commands.some(cmds => cmds.name === command.name)){
-                _this.Log.warn(`  -> Command with the name ${command.name.toLowerCase()} already exists, Loaded anyways.`)  
+                _this.Log.warn(`-> Command with the name ${command.name.toLowerCase()} already exists, Loaded anyways.`)  
                 return _this.client.commands.set(command.name.toLowerCase(), command)
             } 
             
@@ -87,7 +96,7 @@ class Registry {
             _this.Log.custom('CMD', '#00FF00', ` -> Loaded command '${command.name.toLowerCase()}'`)
 
         } catch (error) {
-            _this.Log.custom('ERROR', '#FF0000', `Command file '${file.split('.')[0]}' Had a error loading.\n${error}`)
+            new DCH_CMD_ERROR(`Command file '${file.split('.')[0]}' Had a error loading.\n${error}`)
         } 
 
         delete require.cache[require.resolve(path.join(require.main.path, _filePath, file))]
@@ -106,7 +115,7 @@ class Registry {
             _this.Log.custom('EVNT', '#00FF00', `-> Loaded event '${file.split('.')[0]}'`)
             
         } catch (error) {
-            _this.Log.custom('ERROR', '#FF0000', `Event file '${file.split('.')[0]}' Had a error loading.\n${error}`)
+            new DCH_CMD_ERROR(`Event file '${file.split('.')[0]}' Had a error loading.\n${error}`)
         }
 
         delete require.cache[require.resolve(path.join(require.main.path, _this.eventPath, file))]  
