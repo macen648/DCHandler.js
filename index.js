@@ -7,3 +7,5 @@ module.exports = {
     DCH_Log: require('./src/utils/DCH_Log'),
     DCH_Info: require('./src/utils/DCH_Info')
 }
+
+//Made with love - Macen <3

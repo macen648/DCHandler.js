@@ -19,7 +19,7 @@ const Handler = new HandlerClient(client, {
     PREFIX: "$" 
 })
 
-Handler.info()
+//Handler.info()
 
 client.login(TOKEN)
 

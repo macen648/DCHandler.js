@@ -15,13 +15,18 @@ class DCH_ERROR extends Error {
 
 class DCH_CMD_ERROR {
     constructor(message) {
-        return console.log(`${moment().format('HH:MM:SS')} ${chalk.hex('#FF0000')(`[ERROR]`)} ${message}`)
+        return console.log(`${moment().format('HH:MM:SS')} ${chalk.hex('#FF0000')(`[CMD]`)} ${message}`)
     }
 }
 
-
+class DCH_LOAD_ERROR {
+    constructor(message) {
+        return console.log(`${moment().format('HH:MM:SS')} ${chalk.hex('#FF0000')(`[LOAD]`)} ${message}`)
+    }
+}
 
 module.exports = {
     DCH_ERROR,
-    DCH_CMD_ERROR 
+    DCH_CMD_ERROR,
+    DCH_LOAD_ERROR 
 }  
