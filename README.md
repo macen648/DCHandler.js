@@ -16,8 +16,10 @@ Installing with npm:
 npm i dchandler
 ```
 
-## Example Usage
+# Example Usage
 Basic setup
+
+index.js
 ```js
 const {Client, GatewayIntentBits} = require('discord.js')
 const Handler = require('dchandler')
@@ -28,12 +30,15 @@ const client = new Client({
 
 const handler = new Handler.HandlerClient(client, {// Pass in discord.js client and options.
     commandPath: "commands", // Commands folder.
+    eventPath: "events", // Commands folder.
     PREFIX: "$" // Default bot prefix.
 })
 
 client.login('token')// Your bots token.
 ```
-Basic command
+
+# Basic command
+ping.js
 ```js
 module.exports = {
 /**
@@ -52,6 +57,44 @@ module.exports = {
     },
 }
 ```
+
+# Basic Event
+guildCreate.js
+```js
+// Unlike a Commmand the name of the file is what events get identified by.
+module.exports = (client, guild) => { // Options needed for this event, client is always required. Guild is the event callback.
+    guild.systemChannel.send(`Hello!`).then(sentMessage => {
+        sentMessage.react('👋')
+        console.log(`Joined the guild: ${guild.name}!`)
+    })
+}
+
+// This is replicating
+
+/** 
+client.on('guildCreate', guild => {
+    guild.systemChannel.send(`Hello!`).then(sentMessage => {
+        sentMessage.react('👋')
+        console.log(`Joined the guild: ${guild.name}!`)
+    })
+}) 
+*/
+
+```
+# Start up Flags
+--debug
+--ignore-warnings
+
+```$
+node index.js --debug
+```
+Shows handler debug infomation such as loader status
+
+
+```$
+node index.js --ignore-warnings
+```
+Hides 'Loaded with _ warnings!' Messages
 
 
 ## Extra Resources
