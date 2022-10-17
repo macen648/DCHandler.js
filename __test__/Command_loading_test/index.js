@@ -13,12 +13,16 @@ const client = new Client({
     disableMentions: 'everyone',
 })
 
-const Handler = new HandlerClient(client, {
-    commandPath: "commands",
-    //commandPath: "commands_1",  
-    //commandPath: "commands_empty", 
-    PREFIX: "$" 
-})
+// const Handler = new HandlerClient(client, {
+//     commandPath: "commands",
+//     //commandPath: "commands_1",  
+//     //commandPath: "commands_empty", 
+//     PREFIX: "$" 
+// })
+
+const Handler = new HandlerClient(client)
+//const Handler = new HandlerClient(client, 'config2')
+//const Handler = new HandlerClient()
 
 client.login(TOKEN)
 

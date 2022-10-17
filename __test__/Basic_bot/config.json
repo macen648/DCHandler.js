@@ -1,0 +1,7 @@
+{
+    "Handler": {
+        "commandPath": "commands",
+        "eventPath": "events",
+        "PREFIX": "$"
+    }
+}

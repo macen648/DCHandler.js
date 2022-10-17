@@ -1,12 +1,9 @@
-const { DCH_CMD_ERROR, DCH_LOAD_ERROR } = require('./utils/DCH_ERROR')
+const { DCH_LOAD_ERROR } = require('./utils/DCH_ERROR')
 const prettyMilliseconds = require("pretty-ms")
 const Discord = require('discord.js')
 const path = require("path")
 const Log = require('./utils/DCH_Log')
 const fs = require("fs")
-
-
-
 
 class Registry {
     constructor(client, commandPath, options = {}){
@@ -15,7 +12,7 @@ class Registry {
 
         this.client.commands = new Discord.Collection()
 
-        this.Log = new Log().options({debug: options.debug })
+        this.Log = new Log().addOptions({ debug: options.debug, hide: options.hideOutput })
 
         this.options = options
 
@@ -37,7 +34,7 @@ class Registry {
         if(result.status === "empty") return this.Log.warn(`Commands folder is empty.\nNo commands loaded.`)
         
         this.Log.message(`Commands loaded in ${prettyMilliseconds(performance.now() - startTime)}\n`)
-        if (this.commandWarnings != 0 && this.options.ignoreWarnings == false) this.Log.warn(`Loaded with ${this.commandWarnings} warnings!`)
+        if (this.commandWarnings != 0 && this.options.ignoreWarnings == false) this.Log.warn(`Loaded with ${this.commandWarnings} warnings!`, !this.options.debug)
 
         return result
     }
@@ -48,7 +45,6 @@ class Registry {
         var command = require(filePath)
 
         try {
-
             if (Object.keys(command).length === 0){
                 _this.commandWarnings++
                 _this.Log.warn(`Command file '${file}' isn't correct (Missing Command Structure).\nSkipping.`, _this.options.debug)
@@ -91,7 +87,7 @@ class Registry {
         if(result.status === "empty") return this.Log.warn(`Event folder is empty.\nNo commands loaded.`)
 
         else this.Log.message(`Events loaded in ${prettyMilliseconds(performance.now() - startTime)}`)
-        if (this.eventWarnings != 0 && this.options.ignoreWarnings == false) this.Log.info(`With ${this.commandWarnings} warnings!`)
+        if (this.eventWarnings != 0 && this.options.ignoreWarnings == false) this.Log.info(`With ${this.commandWarnings} warnings!`, !this.options.debug)
 
         return result
     }  
@@ -115,9 +111,7 @@ class Registry {
         return event
     }
 
-
     registerDirectory(path, registerFile) {
-
         function registerSubDirectorys(path, _this){
             const dirs = fs.readdirSync(path, { withFileTypes: true }).filter(item => item.isDirectory()).map(item => item.name)
             if (!dirs) return 
@@ -143,7 +137,6 @@ class Registry {
         
         return { status: "success", commandWarnings: this.commandWarnings, eventWarnings: this.eventWarnings }
     }
-
 
 }
 

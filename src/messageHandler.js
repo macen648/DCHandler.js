@@ -1,13 +1,12 @@
 const { DCH_CMD_ERROR } = require('./utils/DCH_ERROR')
 const Log = require('./utils/DCH_Log')
 
-
 class MessageHandler{
     constructor(client, options = {}){
 
         this.client = client
 
-        this.Log = new Log()
+        this.Log = new Log().addOptions({ hide: options.hideOutput })
 
         this.options = options
 

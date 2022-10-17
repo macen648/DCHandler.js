@@ -13,11 +13,7 @@ const client = new Client({
     disableMentions: 'everyone',
 })
 
-const Handler = new HandlerClient(client, {
-    commandPath: "commands", 
-    eventPath: "events",
-    PREFIX: "$" 
-})
+const Handler = new HandlerClient(client)
 
 //Handler.info()
 

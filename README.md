@@ -83,19 +83,25 @@ client.on('guildCreate', guild => {
 ```
 # Start up Flags
 --debug
+--clear
 --ignore-warnings
 
 ```$
 node index.js --debug
 ```
-Shows handler debug infomation such as loader status
+Shows handler debug infomation such as loader status.
 
 
 ```$
 node index.js --ignore-warnings
 ```
-Hides 'Loaded with _ warnings!' Messages
+Hides 'Loaded with _ warnings!' messages.
 
+
+```$
+node index.js --clear
+```
+Hides all handler console messages.
 
 ## Extra Resources
 - Discord documentation:

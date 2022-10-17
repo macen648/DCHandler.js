@@ -7,7 +7,7 @@ class Ready{
 
         this.options = options
 
-        this.Log = new Log()
+        this.Log = new Log().addOptions({ hide: options.hideOutput })
 
         client.on('ready', client => {
             this.Log.message(`🤖 ${client.user.tag} / Client id#${client.user.id} is online!`)

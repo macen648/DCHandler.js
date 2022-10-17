@@ -12,13 +12,14 @@ class DCH_Log {
         }
     }
 
-    options(__options){
+    addOptions(__options){
         this._options = { ...this._options, ...__options }
         return this
     }
 
     custom(type, color, message, debug) {
         if (debug == false) return this
+        if (this._options.hide == true) return this
         const lines = message.trimEnd().split('\n')
         if (type === '' || null || undefined) for (const line of lines) console.log(`${moment().format('HH:MM:SS')} ${line}`)
         else for (const line of lines) console.log(`${moment().format('HH:MM:SS')} ${chalk.hex(color)(`[${type}]`)}  ${line}`)
@@ -42,6 +43,7 @@ class DCH_Log {
 
     raw(message, debug){
         if (debug == false) return this
+        if (this._options.hide == true) return this
         const lines = message.split('\n')
         for (const line of lines) console.log(line)
         return this
@@ -49,6 +51,7 @@ class DCH_Log {
 
     white(debug){
         if (debug == false) return this
+        if (this._options.hide == true) return this
         console.log("")
         return this
     }
