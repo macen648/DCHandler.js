@@ -7,13 +7,32 @@ const path = require("path")
 const Log = require('./utils/DCH_Log')
 const fs = require('fs')
 
-class Client{
+const DEFAULT = {
+    CommandFolder: 'commands',
+    ConfigFile: 'config',
+    PREFIX: '$'
+}
+
+class Client {
+    /**
+     * The heart of dchandler.
+     * 
+     * Initializes a new dchandler client.
+     * 
+     * @param {DiscordClient} [DiscordClient] Discord Client.
+     * @param {String | object } [config] Config Object or File.
+     * 
+     * If no param is given loadConfig will try and load './config.json' by deafult.
+     * If unable to locate config.json / config.json doesnt include "HANDLER": {...}).
+     * Deafult values will be loaded instead.
+     * If config file is loaded, values will be overwritten by any values passed in as an object.
+     * @default - PREFIX '$'
+     * @default - CommandPath 'commands'
+     */
     constructor(DiscordClient, config){
         if (!DiscordClient) throw new DCH_ERROR(`Missing Discord Client`, '1', "MISSING_DISCORD_CLIENT") 
         
-        this.options
-
-        this.loadConfig(config)      
+        this.options = {}
 
         this.Registry
 
@@ -22,6 +41,8 @@ class Client{
         this.Ready
 
         this.DiscordClient = DiscordClient
+
+        this.loadConfig(config)  
 
         this._cli()
 
@@ -32,40 +53,83 @@ class Client{
         this._start()
     }
 
+    /**
+     * Prints handler info.
+     * @returns this
+     */
     info(){
         new Info(this).all()
         return this
     }
 
+    /**
+     * Prints handler stats.
+     * @returns this
+     */
     stats(){
         new Info(this).stats()
         return this
     }
 
+    /**
+     * Adds an option or options to options.
+     * @param {object} _options 
+     * @returns this
+     */
     addOptions(_options){
         this.options = { ...this.options, ..._options }
         return this
     }
 
+    /**
+     * Loads config file or config object.
+     * 
+     * @param {object | string} [_config] - Config object or file that is loaded into options.
+     * 
+     * If no param is given loadConfig will try and load './config.json' by deafult.
+     * If unable to locate config.json / config.json doesnt include "HANDLER": {...}).
+     * Deafult values will be loaded instead.
+     * If config file is loaded, values will be overwritten by any values passed in as an object.
+     * 
+     * @default - PREFIX '$'
+     * @default - CommandPath 'commands'
+     * 
+     * @returns this
+     */
     loadConfig(_config){
-        if(typeof _config === 'object')this.options = _config
-        else {
-            var configPath = path.join(require.main.path, './', `config.json`)
-            if (_config) configPath = path.join(require.main.path, './', `${_config}.json`)
+        var configPath = path.join(require.main.path, './', `${DEFAULT.ConfigFile}.json`)
 
-            if (fs.existsSync(configPath) == false) throw new DCH_ERROR(`Unable to locate config file, PATH: ${configPath}`, '1', "MISSING_CONFIG")
-            const config = require(configPath)
-            if (config.Handler) this.options = config.Handler
-            else throw new DCH_ERROR(`Unable to load config, Missing Handler object ("HANDLER": {...})`, '1', "MISSING_HANDLER_OBJECT")
+        if(typeof _config === 'object') {
+            if (fs.existsSync(configPath) == true) {
+                const config = require(configPath)
+                if (config.Handler) this.options = config.Handler
+            } 
+            this.addOptions(_config)
+        } else {
+            if (_config) {
+                configPath = path.join(require.main.path, './', `${_config}.json`)
+                if (fs.existsSync(configPath) == false) {
+                    throw new DCH_ERROR(`Unable to locate config file, PATH: ${configPath}`, '1', "MISSING_CONFIG")
+                } else {
+                    const config = require(configPath)
+                    if (config.Handler) this.options = config.Handler
+                    else throw new DCH_ERROR(`Unable to load config, Missing Handler object ("HANDLER": {...})`, '1', "MISSING_HANDLER_OBJECT")
+                }
+            } else {
+                if (fs.existsSync(configPath) == true) {
+                    const config = require(configPath)
+                    if (config.Handler) this.options = config.Handler
+                } 
+            }
         }
+    
+        if (!this.options.commandPath) this.options.commandPath = DEFAULT.CommandFolder
 
-        if (!this.options.commandPath) throw new DCH_ERROR('CommandPath is missing. Specify command directory: \'commandPath\': "" in options', '1', "MISSING_COMMAND_PATH")
+        if (fs.existsSync(path.join(require.main.path, this.options.commandPath)) == false) throw new DCH_ERROR(`Unable to locate commands folder.\nPATH: '${path.join(require.main.path, this.options.commandPath)}' \nFOLDER: '${this.options.commandPath}'`, '1', "WRONG_COMMAND_FOLDER_PATH")
 
-        if (!this.options.PREFIX) {
-            this.options.PREFIX = "$"
-            new Log().message('[CONFIG] No prefix was specified, Defaulting to "$"')
-        }
+        if (!this.options.PREFIX) this.options.PREFIX = DEFAULT.PREFIX
 
+        return this
     }
 
 /**
