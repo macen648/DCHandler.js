@@ -1,6 +1,6 @@
 {
   "name": "dchandler1.0",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "Discord bot handler",
   "main": "index.js",
   "scripts": {},
@@ -25,6 +25,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3",
     "moment": "^2.29.3",
     "pretty-ms": "^7.0.1"
   }

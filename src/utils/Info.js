@@ -1,9 +1,14 @@
-const Log = require("./DCH_Log")
+const Log = require("./Log")
 const path = require('path')
 
 const DCH_package = require('../../package.json')
 
-class DCH_Info {
+class Info {
+    /**
+     * Console Logs **DCHandler** client debug and info.
+     * 
+     * @param {handlerClient} [_handlerClient] DCHandler Client
+     */
     constructor(_handlerClient){
 
         this.handlerClient = _handlerClient
@@ -13,7 +18,9 @@ class DCH_Info {
         const _path = path.join(require.main.path, './', 'package.json')
         this.EX_package = require(_path)
     }
-
+    /**
+     * Console Logs debug info.
+     */
     debug(){
         this.Log.custom('DEBUG', '#cccccc', '')
             .raw(`DCH v${DCH_package.version}`)
@@ -22,7 +29,9 @@ class DCH_Info {
             .raw(`${this.EX_package.name} v${this.EX_package.version}`)
             .custom('DEBUG', '#cccccc', '')
     }
-
+    /**
+     * Console Logs **DCHandler** Client stats.
+     */
     stats(){
         this.Log.custom('STATS', '#cccccc', '')
             .raw(`${this.EX_package.name} v${this.EX_package.version}`)
@@ -32,7 +41,9 @@ class DCH_Info {
             .custom('STATS', '#cccccc', '')
     }
 
-
+    /**
+     * Console Logs all Info about DCHandler.
+     */
     all(){
         this.Log.info("")
             .raw(`DCH v${DCH_package.version}`)
@@ -49,4 +60,4 @@ class DCH_Info {
 }
 
 
-module.exports = DCH_Info
+module.exports = Info

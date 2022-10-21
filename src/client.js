@@ -1,37 +1,36 @@
 const MessageHandler = require('./MessageHandler')
-const { DCH_ERROR } = require('./utils/DCH_ERROR')
+const { DCH_ERROR } = require('./utils/ERROR')
 const Registry = require('./Registry')
+const DEFAULTS = require('./utils/Defaults')
+const dotenv = require('dotenv')
 const Ready = require('./Ready')
-const Info = require('./utils/DCH_Info')
+const Info = require('./utils/Info')
 const path = require("path")
-const Log = require('./utils/DCH_Log')
+const Log = require('./utils/Log')
 const fs = require('fs')
-
-const DEFAULT = {
-    CommandFolder: 'commands',
-    ConfigFile: 'config',
-    PREFIX: '$'
-}
 
 class Client {
     /**
-     * The heart of dchandler.
+     * The heart of **DCHandler**.
      * 
-     * Initializes a new dchandler client.
+     * Initializes a new **DCHandler** Client.
      * 
-     * @param {DiscordClient} [DiscordClient] Discord Client.
-     * @param {String | object } [config] Config Object or File.
+     * @param {DiscordClient} DiscordClient Discord Client
+     * @param {String | object | undefined} [config] 
+     *  
+     * If no config param is given, **loadConfig()** will try and load **'./config.json'** or **.env** by default.
      * 
-     * If no param is given loadConfig will try and load './config.json' by deafult.
-     * If unable to locate config.json / config.json doesnt include "HANDLER": {...}).
-     * Deafult values will be loaded instead.
-     * If config file is loaded, values will be overwritten by any values passed in as an object.
+     * If unable to locate **config.json** or **.env** default values will be loaded instead.
+     * 
+     * If a **config.json** or **.env** is loaded, values will be overwritten by any values passed in as an **Object**.
+     * 
+     * If a **config.json** and **.env** are loaded, **.env** will overwrite **config.json** values.
+     * 
      * @default - PREFIX '$'
      * @default - CommandPath 'commands'
      */
     constructor(DiscordClient, config){
         if (!DiscordClient) throw new DCH_ERROR(`Missing Discord Client`, '1', "MISSING_DISCORD_CLIENT") 
-        
         this.options = {}
 
         this.Registry
@@ -42,9 +41,9 @@ class Client {
 
         this.DiscordClient = DiscordClient
 
-        this.loadConfig(config)  
-
         this._cli()
+
+        this.loadConfig(config)  
 
         this.Log = new Log().addOptions({ hide: this.options.hideOutput })
 
@@ -54,8 +53,8 @@ class Client {
     }
 
     /**
-     * Prints handler info.
-     * @returns this
+     * Console.Log handler info.
+     * @returns Client
      */
     info(){
         new Info(this).all()
@@ -63,8 +62,8 @@ class Client {
     }
 
     /**
-     * Prints handler stats.
-     * @returns this
+     * Console.Log handler stats.
+     * @returns Client
      */
     stats(){
         new Info(this).stats()
@@ -74,7 +73,7 @@ class Client {
     /**
      * Adds an option or options to options.
      * @param {object} _options 
-     * @returns this
+     * @returns Client
      */
     addOptions(_options){
         this.options = { ...this.options, ..._options }
@@ -82,55 +81,73 @@ class Client {
     }
 
     /**
-     * Loads config file or config object.
+     * Loads / reloads **config file** and **.env** or load a new config **object**.
      * 
-     * @param {object | string} [_config] - Config object or file that is loaded into options.
+     * @param {object | string} [config] 
      * 
-     * If no param is given loadConfig will try and load './config.json' by deafult.
-     * If unable to locate config.json / config.json doesnt include "HANDLER": {...}).
-     * Deafult values will be loaded instead.
-     * If config file is loaded, values will be overwritten by any values passed in as an object.
+     * If no config param is given, **loadConfig()** will try and load **'./config.json'** or **.env** by default.
+     * 
+     * If unable to locate **config.json** or **.env** default values will be loaded instead.
+     * 
+     * If a **config.json** or **.env** is loaded, values will be overwritten by any values passed in as an **Object**.
+     * 
+     * If a **config.json** and **.env** are loaded, **.env** will overwrite **config.json** values.
      * 
      * @default - PREFIX '$'
      * @default - CommandPath 'commands'
      * 
-     * @returns this
+     * @returns loaded options
      */
-    loadConfig(_config){
-        var configPath = path.join(require.main.path, './', `${DEFAULT.ConfigFile}.json`)
+    loadConfig(config) {
+        const _Log = new Log().addOptions({ hide: this.options.hideOutput })
+        const defaultConfigPath = path.join(require.main.path, './', `${DEFAULTS.ConfigFile}.json`)
+        var loadedOptions = {}
 
-        if(typeof _config === 'object') {
-            if (fs.existsSync(configPath) == true) {
-                const config = require(configPath)
-                if (config.Handler) this.options = config.Handler
-            } 
-            this.addOptions(_config)
-        } else {
-            if (_config) {
-                configPath = path.join(require.main.path, './', `${_config}.json`)
-                if (fs.existsSync(configPath) == false) {
-                    throw new DCH_ERROR(`Unable to locate config file, PATH: ${configPath}`, '1', "MISSING_CONFIG")
-                } else {
-                    const config = require(configPath)
-                    if (config.Handler) this.options = config.Handler
-                    else throw new DCH_ERROR(`Unable to load config, Missing Handler object ("HANDLER": {...})`, '1', "MISSING_HANDLER_OBJECT")
-                }
-            } else {
-                if (fs.existsSync(configPath) == true) {
-                    const config = require(configPath)
-                    if (config.Handler) this.options = config.Handler
-                } 
+        //custom config.json
+        if (typeof config === 'string') {
+            const customConfigPath = path.join(require.main.path, './', `${config}.json`)
+            if (fs.existsSync(customConfigPath) == false) throw new DCH_ERROR(`Unable to locate config file, PATH: ${defaultConfigPath}`, '1', "MISSING_CONFIG")
+            const result = this._loadJsonToOptions(customConfigPath, config)
+            loadedOptions = { ...loadedOptions, ...result }
+
+        //default config.json
+        } else if (fs.existsSync(defaultConfigPath) == true){
+            const result =  this._loadJsonToOptions(defaultConfigPath, DEFAULTS.ConfigFile)
+            loadedOptions = { ...loadedOptions, ...result }
+        } 
+
+        //.env
+        const result = dotenv.config()
+        if (!result.error) {
+            if ((Object.keys(result.parsed).length !== 0)) {
+                this.addOptions(result.parsed)
+                _Log.info("Loaded .env into options.", this.options.debug)
+                loadedOptions = { ...loadedOptions, ...result.parsed }
             }
-        }
-    
-        if (!this.options.commandPath) this.options.commandPath = DEFAULT.CommandFolder
+            else _Log.warn(".env is empty.")
+        } 
 
-        if (fs.existsSync(path.join(require.main.path, this.options.commandPath)) == false) throw new DCH_ERROR(`Unable to locate commands folder.\nPATH: '${path.join(require.main.path, this.options.commandPath)}' \nFOLDER: '${this.options.commandPath}'`, '1', "WRONG_COMMAND_FOLDER_PATH")
+        //custom object
+        if (typeof config === 'object'){
+            this.addOptions(config)
+            _Log.info(`Loaded object into options.`, this.options.debug)
+            loadedOptions = { ...loadedOptions, ...config }
+        } 
+        
+        //defaults
+        if (!this.options.commandPath){
+            this.options.commandPath = DEFAULTS.CommandFolder
+            loadedOptions = { ...loadedOptions, CommandFolder: DEFAULTS.CommandFolder }
+        } 
 
-        if (!this.options.PREFIX) this.options.PREFIX = DEFAULT.PREFIX
+        if (!this.options.PREFIX){
+            this.options.PREFIX = DEFAULTS.PREFIX
+            loadedOptions = { ...loadedOptions, ...DEFAULTS.PREFIX }
+        } 
 
-        return this
+        return loadedOptions
     }
+
 
 /**
  * @api private 
@@ -138,9 +155,13 @@ class Client {
     _cli(){
         this.options.debug = false
         this.options.ignoreWarnings = false
+        this.options.hideOutput = false
 
         for (var i = 0; i < process.argv.length; i++) {
-            if (process.argv[i] === '--debug') this.options.debug = true
+            if (process.argv[i] === '--debug'){
+                this.options.debug = true
+                new Info(this).debug()
+            } 
             else if (process.argv[i] === '--ignore-warnings') {
                 this.options.ignoreWarnings = true
             } else if (process.argv[i] === '--clear') {
@@ -154,8 +175,6 @@ class Client {
  * @api private 
  */
     _start(){
-        if (this.options.debug == true) new Info(this).debug()
-
         this.Log.message('🚀 Starting bot...')
 
         this.Registry = new Registry(this.DiscordClient, this.options.commandPath, this.options)
@@ -168,6 +187,29 @@ class Client {
         this.MessageHandler = new MessageHandler(this.DiscordClient, this.options).listen()
 
         this.Ready = new Ready(this.DiscordClient, this.options)   
+    }
+
+/**
+ * @api private 
+ */
+    _loadJsonToOptions(path, file){
+        const _Log = new Log().addOptions({ hide: this.options.hideOutput })
+        var config
+        try {
+            config = require(path)
+            if (Object.keys(config).length !== 0) {
+                if (config.Handler){
+                    this.addOptions(config.Handler)
+                    config = config.Handler
+                } 
+                else this.addOptions(config)
+                _Log.info(`Loaded ${file}.json into options.`, this.options.debug)
+            }
+            else _Log.warn(`${file}.json is empty.`)
+        } catch (error) {
+            _Log.warn(`Had an error trying to load Path: ${path} File: ${file} (Likely empty).`)
+        }
+        return config
     }
 }
 

@@ -2,11 +2,13 @@
 [![NPM Badge](https://nodei.co/npm/dchandler.png?downloads=true&stars=true)](https://nodei.co/npm/dchandler)
 
 ## About
-DCHandler is the simple and straight to the point command handler to both help get your discord bot running, as well as allowing full control over everything. Skip the cluttered mess of other handlers and get straight to the point. DCHandler is mostly object-oriented and allows the use of [Discord.js](https://discord.js.org/#/) v13, and provides an easy to use and convenient command structure. 
+DCHandler is the simple and straight to the point command handler. 
 
 ## Features
 * Light weight and simple.
 * Easy and convenient command structure.
+* debugging and logging 
+
 
 ## Installation
 Requires Node 12.0.0 or newer.
@@ -35,6 +37,58 @@ const handler = new Handler.HandlerClient(client, {// Pass in discord.js client 
 })
 
 client.login('token')// Your bots token.
+```
+# config
+By default DCH will try and load './config.json' or.env by default If it is unable to locate config.json or .env default values will be loaded instead.
+      
+If a config.json or .env is loaded, values will be overwritten by any values passed in as an Object.
+With that if a config.json and .env are loaded, .env will overwrite config.json values.
+
+Deafult values:
+- PREFIX: $
+- CommandPath: commands
+
+Pass in an object.
+```js
+const handler = new Handler.HandlerClient(client, { //options
+    commandPath: "commands", // Commands folder.
+    eventPath: "events", // Commands folder.
+    PREFIX: "$" // Default bot prefix.
+})
+```
+
+Pass in path to json file.
+```js
+const handler = new Handler.HandlerClient(client, 'Test_Config')
+```
+
+Auto load a .env or config.json
+```js
+const handler = new Handler.HandlerClient(client)
+```
+
+.Json file can be structured as:
+
+This will load all of the .json file's contents into Options.
+Same applies to .env
+```json
+{
+    "commandPath": "commands",
+    "eventPath": "events",
+    "PREFIX": "$" 
+}
+```
+or
+
+This will only load the "Handler":{...} object into Options.
+```json
+{
+    "Handler": {
+        "commandPath": "commands",
+        "eventPath": "events",
+        "PREFIX": "$"
+    }
+}
 ```
 
 # Basic command

@@ -1,7 +1,15 @@
-const { DCH_CMD_ERROR } = require('./utils/DCH_ERROR')
-const Log = require('./utils/DCH_Log')
+const { DCH_CMD_ERROR } = require('./utils/ERROR')
+const Log = require('./utils/Log')
 
 class MessageHandler{
+    /**
+     * Parses incoming **Discord** Client messages and handles them accrodingly.
+     * 
+     * Initializes a new **MessageHandler**.
+     * 
+     * @param {DiscordClient} DiscordClient Discord Client
+     * @param {object} options Options
+     */
     constructor(client, options = {}){
 
         this.client = client
@@ -14,6 +22,9 @@ class MessageHandler{
 
     }
 
+    /**
+     * Listens for the **messageCreate** Event and handles messages accordingly to dispach commands.
+     */
     listen(){
         this.client.on('messageCreate', async message => {
             if (message.author.bot) return
