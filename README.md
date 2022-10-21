@@ -7,7 +7,7 @@ DCHandler is the simple and straight to the point command handler.
 ## Features
 * Light weight and simple.
 * Easy and convenient command structure.
-* debugging and logging 
+* Debugging and logging 
 
 
 ## Installation
@@ -39,14 +39,17 @@ const handler = new Handler.HandlerClient(client, {// Pass in discord.js client 
 client.login('token')// Your bots token.
 ```
 # config
-By default DCH will try and load './config.json' or.env by default If it is unable to locate config.json or .env default values will be loaded instead.
+By default DCH will try and load config.json or.env by default. 
+
+If it is unable to locate config.json or .env default values will be loaded instead.
       
 If a config.json or .env is loaded, values will be overwritten by any values passed in as an Object.
+
 With that if a config.json and .env are loaded, .env will overwrite config.json values.
 
 Deafult values:
-- PREFIX: $
-- CommandPath: commands
+- PREFIX: '$'
+- CommandPath: 'commands'
 
 Pass in an object.
 ```js
@@ -67,9 +70,10 @@ Auto load a .env or config.json
 const handler = new Handler.HandlerClient(client)
 ```
 
-.Json file can be structured as:
+### A .json file can be structured as such.
 
 This will load all of the .json file's contents into Options.
+
 Same applies to .env
 ```json
 {
