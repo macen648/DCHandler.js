@@ -38,7 +38,7 @@ const handler = new Handler.HandlerClient(client, {// Pass in discord.js client 
 
 client.login('token')// Your bots token.
 ```
-# config
+# Config
 By default DCH will try and load config.json or.env by default. 
 
 If it is unable to locate config.json or .env default values will be loaded instead.
@@ -70,11 +70,11 @@ Auto load a .env or config.json
 const handler = new Handler.HandlerClient(client)
 ```
 
-### A .json file can be structured as such.
+## A .json file can be structured as such.
 
 This will load all of the .json file's contents into Options.
 
-Same applies to .env
+Same applies to .env.
 ```json
 {
     "commandPath": "commands",
@@ -160,6 +160,9 @@ Hides 'Loaded with _ warnings!' messages.
 node index.js --clear
 ```
 Hides all handler console messages.
+
+## AudioBoi
+My music bot that is built with DCHandler.
 
 ## Extra Resources
 - Discord documentation:
