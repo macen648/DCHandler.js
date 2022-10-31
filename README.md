@@ -8,7 +8,7 @@ DCHandler is the simple and straight to the point command handler for discord.js
 * Light weight and simple.
 * Easy and convenient command structure.
 * Debugging and logging 
-
+* Per-Guild prefix(s) support using mongoDB.
 
 ## Installation
 Requires Node 12.0.0 or newer.
@@ -33,6 +33,7 @@ const client = new Client({
 const handler = new Handler.HandlerClient(client, {// Pass in discord.js client and options.
     commandPath: "commands", // Commands folder.
     eventPath: "events", // Commands folder.
+    MongoURI: "mongodb://localhost:27017/test", // Path to connect to a mongoDB database
     PREFIX: "$" // Default bot prefix.
 })
 
@@ -56,6 +57,7 @@ Pass in an object.
 const handler = new Handler.HandlerClient(client, { //options
     commandPath: "commands", // Commands folder.
     eventPath: "events", // Commands folder.
+    MongoURI: "mongodb://localhost:27017/test", // Path to connect to a mongoDB database
     PREFIX: "$" // Default bot prefix.
 })
 ```
@@ -79,6 +81,7 @@ Same applies to .env.
 {
     "commandPath": "commands",
     "eventPath": "events",
+    "MongoURI": "mongodb://localhost:27017/test",
     "PREFIX": "$" 
 }
 ```
@@ -90,10 +93,20 @@ This will only load the "Handler":{...} object into Options.
     "Handler": {
         "commandPath": "commands",
         "eventPath": "events",
+        "MongoURI": "mongodb://localhost:27017/test",
         "PREFIX": "$"
     }
 }
 ```
+
+# Per-Guild prefix(s)
+If no MongoURI path is passed in, 
+Dch will not use per Guild prefixing and will strictly use the default prefix. 
+
+If a MongoURI is passed in and a connection to mongoDB is successful,
+Dch will use the prefix assigned to that guild.
+If there isn't an assigned prefix in the data base.
+The default prefix is used instead. 
 
 # Basic command
 ping.js
@@ -139,11 +152,27 @@ client.on('guildCreate', guild => {
 */
 
 ```
+# Change prefix command
+changePrefix.js
+```js
+const { db } = require('dchandler')
+
+module.exports = {
+    name: 'changePrefix',
+    aliases: ['cp'],
+    execute(client, message, args) {
+        if (!args[0]) return message.channel.send(`No given prefix!`)
+        new db().setPrefix(args[0], message)
+        return message.channel.send(`Changed prefix to ${args[0]} !`)
+    },
+}
+```
+
 # Start up Flags
---debug
---clear
---ignore-warnings
---v | --version
+- --debug
+- --clear
+- --ignore-warnings
+- --v | --version
 
 ```$
 node index.js --debug
