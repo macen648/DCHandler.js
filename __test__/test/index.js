@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits } = require('discord.js')
 const { HandlerClient } = require('../../index')
 
-const { TOKEN } = require('../config.json')
+const { TOKEN, MONGOURI } = require('../config.json')
 
 const client = new Client({
     intents: [
@@ -13,9 +13,12 @@ const client = new Client({
     disableMentions: 'everyone',
 })
 
-const Handler = new HandlerClient(client)
+//const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events' })
 
-Handler.loadConfig()
+const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events', MongoURI: MONGOURI })
+
+
+//Handler.info()
 
 client.login(TOKEN)
 

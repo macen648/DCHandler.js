@@ -8,6 +8,7 @@ const Info = require('./utils/Info')
 const path = require("path")
 const Log = require('./utils/Log')
 const fs = require('fs')
+const db = require('./db')
 
 class Client {
     /**
@@ -33,6 +34,8 @@ class Client {
         if (!DiscordClient) throw new DCH_ERROR(`Missing Discord Client`, '1', "MISSING_DISCORD_CLIENT") 
         this.options = {}
 
+        this.db
+
         this.Registry
 
         this.MessageHandler
@@ -44,6 +47,12 @@ class Client {
         this._cli()
 
         this.loadConfig(config)  
+
+        if (this.options.MongoDB){
+            this.db = new db(this.options)
+            this.db.login(this.options.MongoURI)
+            this.db.ready()
+        }
 
         this.Log = new Log().addOptions({ hide: this.options.hideOutput })
 
@@ -130,7 +139,7 @@ class Client {
         //custom object
         if (typeof config === 'object'){
             this.addOptions(config)
-            _Log.info(`Loaded object into options.`, this.options.debug)
+            _Log.info(`Loaded constructor into options.`, this.options.debug)
             loadedOptions = { ...loadedOptions, ...config }
         } 
         
@@ -145,6 +154,10 @@ class Client {
             loadedOptions = { ...loadedOptions, ...DEFAULTS.PREFIX }
         } 
 
+        if (this.options.MongoURI){
+            this.options.MongoDB = true
+            loadedOptions = { ...loadedOptions, ...this.options.MongoDB }
+        } 
         return loadedOptions
     }
 
@@ -156,16 +169,17 @@ class Client {
         this.options.debug = false
         this.options.ignoreWarnings = false
         this.options.hideOutput = false
+        this.options.MongoDB = false
 
         for (var i = 0; i < process.argv.length; i++) {
             if (process.argv[i] === '--debug'){
                 this.options.debug = true
-                new Info(this).debug()
-            } 
-            else if (process.argv[i] === '--ignore-warnings') {
+            } else if (process.argv[i] === '--ignore-warnings') {
                 this.options.ignoreWarnings = true
             } else if (process.argv[i] === '--clear') {
                 this.options.hideOutput = true
+            } else if (process.argv[i] === '--v' || process.argv[i] === '--version') {
+                new Info(this).versions()
             }
         }
 

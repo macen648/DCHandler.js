@@ -6,6 +6,7 @@ module.exports = {
     MessageHandler: require('./src/MessageHandler'),
     Registry: require('./src/Registry'),
     Ready: require('./src/Ready'),  
+    db: require('./src/db'),
 
     //utils
     Log: require('./src/utils/Log'),
@@ -14,8 +15,15 @@ module.exports = {
     DCH_LOAD_ERROR, 
     DCH_ERROR,
 
-    //CONST
-    DEFAULTS: require('./src/utils/Defaults')
+    //Const
+    DEFAULTS: require('./src/utils/Defaults'),
+
+    //version
+    version: require('./package.json').version,
+
+    //models
+    guild: require('./src/models/guild'),
+
 }
 
 //Made with love - Macen <3

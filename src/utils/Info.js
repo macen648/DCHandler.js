@@ -21,13 +21,13 @@ class Info {
     /**
      * Console Logs debug info.
      */
-    debug(){
-        this.Log.custom('DEBUG', '#cccccc', '')
-            .raw(`DCH v${DCH_package.version}`)
-            .raw(`Discord.js v${this.EX_package.dependencies["discord.js"]}`)
-            .raw(`Node ${process.version}`)
-            .raw(`${this.EX_package.name} v${this.EX_package.version}`)
-            .custom('DEBUG', '#cccccc', '')
+    versions(){
+        this.Log.custom('VERSION', '#cccccc', '')
+            .raw(`DCH: v${DCH_package.version}`)
+            .raw(`Discord.js: v${this.EX_package.dependencies["discord.js"]}`)
+            .raw(`Node: ${process.version}`)
+            .raw(`Package ${this.EX_package.name}: v${this.EX_package.version}`)
+            .custom('VERSION', '#cccccc', '')
     }
     /**
      * Console Logs **DCHandler** Client stats.

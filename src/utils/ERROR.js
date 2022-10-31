@@ -46,9 +46,23 @@ class DCH_LOAD_ERROR {
     }
 }
 
+class DCH_DB_ERROR {
+    /**
+     * Emits a **DCH_DB_ERROR**.
+     * 
+     * Doesn't exit proccess.
+     * 
+     * @param {string} [message] Error Message
+     */
+    constructor(message) {
+        return console.log(`${moment().format('HH:MM:SS')} ${chalk.hex('#FF0000')(`[DB] `)} ${message}`)
+    }
+}
+
 
 module.exports = {
     DCH_ERROR,
     DCH_CMD_ERROR,
-    DCH_LOAD_ERROR 
+    DCH_LOAD_ERROR,
+    DCH_DB_ERROR 
 }  

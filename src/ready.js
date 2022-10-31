@@ -7,7 +7,7 @@ class Ready{
      * @param {DiscordClient} [client] - Discord Client
      * @param {object} options - Options
      */
-    constructor(client, options){
+    constructor(client, options = {}){
      
         this.client = client
 

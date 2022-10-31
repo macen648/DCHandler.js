@@ -2,7 +2,7 @@
 [![NPM Badge](https://nodei.co/npm/dchandler.png?downloads=true&stars=true)](https://nodei.co/npm/dchandler)
 
 ## About
-DCHandler is the simple and straight to the point command handler. 
+DCHandler is the simple and straight to the point command handler for discord.js v14. 
 
 ## Features
 * Light weight and simple.
@@ -47,7 +47,7 @@ If a config.json or .env is loaded, values will be overwritten by any values pas
 
 With that if a config.json and .env are loaded, .env will overwrite config.json values.
 
-Deafult values:
+Default values:
 - PREFIX: '$'
 - CommandPath: 'commands'
 
@@ -105,7 +105,7 @@ module.exports = {
     aliases
     ect...
 
-    Anything put here can be accessed for custom fetures such as a help command.
+    Anything put here can be accessed for custom features such as a help command.
 */
     name: 'ping', // Name and aliases are used by the command handler to call the command.
     aliases: [],
@@ -119,7 +119,7 @@ module.exports = {
 # Basic Event
 guildCreate.js
 ```js
-// Unlike a Commmand the name of the file is what events get identified by.
+// Unlike a Command the name of the file is what events get identified by.
 module.exports = (client, guild) => { // Options needed for this event, client is always required. Guild is the event callback.
     guild.systemChannel.send(`Hello!`).then(sentMessage => {
         sentMessage.react('👋')
@@ -143,11 +143,12 @@ client.on('guildCreate', guild => {
 --debug
 --clear
 --ignore-warnings
+--v | --version
 
 ```$
 node index.js --debug
 ```
-Shows handler debug infomation such as loader status.
+Shows handler debug information such as loader status.
 
 
 ```$
