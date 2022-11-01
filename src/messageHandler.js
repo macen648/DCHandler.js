@@ -1,11 +1,10 @@
 const { DCH_CMD_ERROR } = require('./utils/ERROR')
 const Log = require('./utils/Log')
 const db = require('./db')
-const guildSchema = require('./models/guild')
 
 class MessageHandler{
     /**
-     * Parses incoming **Discord** Client messages and handles them accrodingly.
+     * Parses incoming **Discord** Client messages and handles them accordingly.
      * 
      * Initializes a new **MessageHandler**.
      * 
@@ -27,7 +26,7 @@ class MessageHandler{
     }
 
     /**
-     * Listens for the **messageCreate** Event and handles messages accordingly to dispach commands.
+     * Listens for the **messageCreate** Event and handles messages accordingly to dispatch commands.
      */
     listen(){
         this.client.on('messageCreate', async message => {

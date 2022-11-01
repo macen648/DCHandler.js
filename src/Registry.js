@@ -155,7 +155,7 @@ class Registry {
  */
     registerDirectory(path, registerFile) {
         try {
-            function registerSubDirectorys(path, _this) {
+            function registerSubDirectories(path, _this) {
                 const dirs = fs.readdirSync(path, { withFileTypes: true }).filter(item => item.isDirectory()).map(item => item.name)
                 if (!dirs) return
 
@@ -164,7 +164,7 @@ class Registry {
                         _this.commandWarnings++
                         return _this.Log.warn(`Folder ${dir} is empty.`, _this.options.debug)
                     }
-                    registerSubDirectorys(`${path}/${dir}`, _this)
+                    registerSubDirectories(`${path}/${dir}`, _this)
                     fs.readdirSync(`${path}/${dir}`).filter(file => file.endsWith(".js")).forEach(file => {
                         registerFile(file, `${path}/${dir}`, _this)
                     })
@@ -176,7 +176,7 @@ class Registry {
 
             fs.readdirSync(`${path}`).filter(file => file.endsWith(".js")).forEach(file => { registerFile(file, `${path}`, this) })
 
-            registerSubDirectorys(path, this)
+            registerSubDirectories(path, this)
 
             return { status: "success", commandWarnings: this.commandWarnings, eventWarnings: this.eventWarnings }
         } catch (error) {

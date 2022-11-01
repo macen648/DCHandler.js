@@ -1,21 +1,21 @@
-# DCHandler
+# DCHandler.js
 [![NPM Badge](https://nodei.co/npm/dchandler.png?downloads=true&stars=true)](https://nodei.co/npm/dchandler)
 
 ## About
-DCHandler is the simple and straight to the point command handler for discord.js v14. 
+DCHandler.js is the simple, powerful and straight to the point command handler for discord.js v14. 
 
 ## Features
-* Light weight and simple.
-* Easy and convenient command structure.
-* Debugging and logging 
+* Powerful and simple.
+* Easy object based command structure.
 * Per-Guild prefix(s) support using mongoDB.
+* Debugging and logging. 
 
 ## Installation
 Requires Node 12.0.0 or newer.
 
 Installing with npm:
 ```$
-npm i dchandler
+npm i dchandler.js
 ```
 
 # Example Usage
@@ -24,16 +24,16 @@ Basic setup
 index.js
 ```js
 const {Client, GatewayIntentBits} = require('discord.js')
-const Handler = require('dchandler')
+const Handler = require('dchandler.js')
 
 const client = new Client({
     intents: [], // Your bots required Intents.
 })
 
-const handler = new Handler.HandlerClient(client, {// Pass in discord.js client and options.
+const handler = new Handler.HandlerClient(client, { // Pass in discord.js client and options.
     commandPath: "commands", // Commands folder.
     eventPath: "events", // Commands folder.
-    MongoURI: "mongodb://localhost:27017/test", // Path to connect to a mongoDB database
+    MongoURI: "mongodb://localhost:27017/test", // URI to connect to a mongoDB database
     PREFIX: "$" // Default bot prefix.
 })
 
@@ -57,14 +57,14 @@ Pass in an object.
 const handler = new Handler.HandlerClient(client, { //options
     commandPath: "commands", // Commands folder.
     eventPath: "events", // Commands folder.
-    MongoURI: "mongodb://localhost:27017/test", // Path to connect to a mongoDB database
+    MongoURI: "mongodb://localhost:27017/test", // URI to connect to a mongoDB database
     PREFIX: "$" // Default bot prefix.
 })
 ```
 
 Pass in path to json file.
 ```js
-const handler = new Handler.HandlerClient(client, 'Test_Config')
+const handler = new Handler.HandlerClient(client, 'config')
 ```
 
 Auto load a .env or config.json
@@ -155,7 +155,7 @@ client.on('guildCreate', guild => {
 # Change prefix command
 changePrefix.js
 ```js
-const { db } = require('dchandler')
+const { db } = require('dchandler.js')
 
 module.exports = {
     name: 'changePrefix',
@@ -192,7 +192,7 @@ node index.js --clear
 Hides all handler console messages.
 
 ## AudioBoi
-My music bot that is built with DCHandler.
+My music bot that is built with DCHandler.js.
 
 ## Extra Resources
 - Discord documentation:

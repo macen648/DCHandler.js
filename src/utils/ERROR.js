@@ -24,7 +24,7 @@ class DCH_CMD_ERROR {
     /**
      * Emits a **DCH_CMD_ERROR**.
      * 
-     * Doesn't exit proccess.
+     * Doesn't exit process.
      * 
      * @param {string} [message] Error Message
      */
@@ -37,7 +37,7 @@ class DCH_LOAD_ERROR {
     /**
      * Emits a **DCH_LOAD_ERROR**.
      * 
-     * Doesn't exit proccess.
+     * Doesn't exit process.
      * 
      * @param {string} [message] Error Message
      */
@@ -50,7 +50,7 @@ class DCH_DB_ERROR {
     /**
      * Emits a **DCH_DB_ERROR**.
      * 
-     * Doesn't exit proccess.
+     * Doesn't exit process.
      * 
      * @param {string} [message] Error Message
      */
