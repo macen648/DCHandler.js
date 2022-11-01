@@ -1,5 +1,5 @@
 // Custom Console logs ;)
-const moment = require('moment')
+const dayjs = require('dayjs')
 const chalk = require('chalk')
 
 class Log {
@@ -46,8 +46,8 @@ class Log {
         if (this._options.hide == true) return this
 
         const lines = message.trimEnd().split('\n')
-        if (tag === '' || null || undefined) for (const line of lines) console.log(`${moment().format('HH:MM:SS')} ${line}`)
-        else for (const line of lines) console.log(`${moment().format('HH:MM:SS')} ${chalk.hex(color)(`[${tag}]`)}  ${line}`)
+        if (tag === '' || null || undefined) for (const line of lines) console.log(`${dayjs().format('HH:mm:ss')} ${line}`)
+        else for (const line of lines) console.log(`${dayjs().format('HH:mm:ss')} ${chalk.hex(color)(`[${tag}]`)}  ${line}`)
         
         return this
     }
@@ -85,7 +85,7 @@ class Log {
     }
 
     /**
-     * Raw **string** that keeps the NewLine wrapping and hide functionailty.
+     * Raw **string** that keeps the NewLine wrapping and hide functionality.
      * @param {string} [message] Message
      * @param {boolean} hide Hides from Logging
      * @returns Log
