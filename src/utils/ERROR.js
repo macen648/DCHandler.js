@@ -1,4 +1,4 @@
-const moment = require('moment')
+const dayjs = require('dayjs')
 const chalk = require('chalk')
 
 class DCH_ERROR extends Error {
@@ -14,7 +14,7 @@ class DCH_ERROR extends Error {
 
         Error.captureStackTrace(this, this.constructor)
         this.name = this.constructor.name
-        this.timeStamp = moment().format('HH:MM:SS')
+        this.timeStamp = dayjs().format('HH:mm:ss')
         this.code = code
         this.exitCode = exitCode
     }
@@ -29,7 +29,7 @@ class DCH_CMD_ERROR {
      * @param {string} [message] Error Message
      */
     constructor(message) {
-        return console.log(`${moment().format('HH:MM:SS')} ${chalk.hex('#FF0000')(`[CMD] `)} ${message}`)
+        return console.log(`${dayjs().format('HH:mm:ss')} ${chalk.hex('#FF0000')(`[CMD] `)} ${message}`)
     }
 }
 
@@ -42,7 +42,7 @@ class DCH_LOAD_ERROR {
      * @param {string} [message] Error Message
      */
     constructor(message) {
-        return console.log(`${moment().format('HH:MM:SS')} ${chalk.hex('#FF0000')(`[LOAD] `)} ${message}`)
+        return console.log(`${dayjs().format('HH:mm:ss')} ${chalk.hex('#FF0000')(`[LOAD] `)} ${message}`)
     }
 }
 
@@ -55,7 +55,7 @@ class DCH_DB_ERROR {
      * @param {string} [message] Error Message
      */
     constructor(message) {
-        return console.log(`${moment().format('HH:MM:SS')} ${chalk.hex('#FF0000')(`[DB] `)} ${message}`)
+        return console.log(`${dayjs().format('HH:mm:ss') } ${chalk.hex('#FF0000')(`[DB] `)} ${message}`)
     }
 }
 
