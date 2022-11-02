@@ -1,5 +1,5 @@
 const { Client, GatewayIntentBits } = require('discord.js')
-const { HandlerClient } = require('../../index')
+const { HandlerClient } = require('../../../index')
 
 const { TOKEN } = require('../../config.json')
 
@@ -19,7 +19,7 @@ const Handler = new HandlerClient(client, {
     PREFIX: "$" 
 })
 
-Handler.info()
+Handler.stats()
 
 client.login(TOKEN)
 

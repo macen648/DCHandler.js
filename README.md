@@ -173,23 +173,28 @@ module.exports = {
 - --clear
 - --ignore-warnings
 - --v | --version
+- --p-v | --project-versions
 
 ```$
 node index.js --debug
 ```
 Shows handler debug information such as loader status.
 
-
 ```$
 node index.js --ignore-warnings
 ```
 Hides 'Loaded with _ warnings!' messages.
 
-
 ```$
 node index.js --clear
 ```
 Hides all handler console messages.
+
+```$
+node index.js --v --p-v
+```
+- --v Shows Handler version.
+- --p-v Shows All relevant project versions.
 
 ## AudioBoi
 My music bot that is built with DCHandler.js.

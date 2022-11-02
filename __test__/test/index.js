@@ -15,8 +15,8 @@ const client = new Client({
 
 //const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events' })
 
-//const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events', MongoURI: MONGOURI })
-const Handler = new HandlerClient(client)
+const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events', MongoURI: MONGOURI })
+// const Handler = new HandlerClient(client)
 
 // Handler.stats()
 Handler.version()

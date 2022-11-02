@@ -43,8 +43,6 @@ class Client {
 
         this.DiscordClient = DiscordClient
 
-        this._version = require('../package.json').version
-
         this._cli()
 
         this.loadConfig(config)  
@@ -76,7 +74,7 @@ class Client {
      * @returns Client
      */
     version(){
-        this.Log.message(`DCH: v${this._version}`)
+        this.Log.version()
         return this
     }
 
@@ -189,6 +187,8 @@ class Client {
             } else if (process.argv[i] === '--clear') {
                 this.options.hideOutput = true
             } else if (process.argv[i] === '--v' || process.argv[i] === '--version') {
+                new Log().version()
+            }else if (process.argv[i] === '--p-v' || process.argv[i] === '--project-versions') {
                 new Log().versions()
             }
         }

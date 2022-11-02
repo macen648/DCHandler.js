@@ -116,10 +116,18 @@ class Log {
         return this
     }
 
+    /**
+     * Console.Log handler version.
+     * @returns Log
+     */
+    version() {
+        this.message(`DCH: v${this.DCH_package.version}`)
+        return this
+    }
 
     /**
      * Console.Log project versions.
-     * @returns Client
+     * @returns Log
      */
     versions() {
         this.custom('VERSION', '#cccccc', '')
