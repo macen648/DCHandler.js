@@ -1,4 +1,4 @@
-const { DCH_CMD_ERROR, DCH_LOAD_ERROR, DCH_ERROR } = require('./src/utils/ERROR')
+const { DCH_CMD_ERROR, DCH_DB_ERROR, DCH_LOAD_ERROR, DCH_ERROR } = require('./src/utils/ERROR')
 
 module.exports = {
     //Core
@@ -10,13 +10,14 @@ module.exports = {
 
     //utils
     Log: require('./src/utils/Log'),
-    Info: require('./src/utils/Info'),
+    parseMs: require('./src/utils/parseMs'),
     DCH_CMD_ERROR, 
+    DCH_DB_ERROR,
     DCH_LOAD_ERROR, 
     DCH_ERROR,
 
     //Const
-    DEFAULTS: require('./src/utils/Defaults'),
+    DefaultValues: require('./src/utils/DefaultValues'),
 
     //version
     version: require('./package.json').version,

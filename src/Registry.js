@@ -1,5 +1,5 @@
 const { DCH_LOAD_ERROR } = require('./utils/ERROR')
-const prettyMilliseconds = require("pretty-ms")
+const { formatMs } = require('./utils/parseMs')
 const Discord = require('discord.js')
 const path = require("path")
 const Log = require('./utils/Log')
@@ -51,8 +51,8 @@ class Registry {
             this.Log.warn(`Commands folder is empty.\nNo commands loaded.`)
             return result
         } 
-        
-        this.Log.message(`Commands loaded in ${prettyMilliseconds(performance.now() - startTime)}\n`)
+
+        this.Log.message(`Commands loaded in ${formatMs(performance.now() - startTime)}\n`)
         if (this.commandWarnings != 0 && this.options.ignoreWarnings == false) this.Log.warn(`Loaded with ${this.commandWarnings} warnings!`, !this.options.debug)
 
         return result
@@ -78,7 +78,7 @@ class Registry {
             if(command.name.includes(" ")){
                 command.name = command.name.replace(/ /g, "_")
                 _this.commandWarnings++
-                _this.Log.warn(`Command file '${file}' name containes spaces.\nConverted to '${command.name}'.`, _this.options.debug)
+                _this.Log.warn(`Command file '${file}' name contains spaces.\nConverted to '${command.name}'.`, _this.options.debug)
             } 
 
             if (_this.client.commands.some(cmds => cmds.name === command.name)) {
@@ -122,7 +122,7 @@ class Registry {
             return result
         }  
 
-        else this.Log.message(`Events loaded in ${prettyMilliseconds(performance.now() - startTime)}`)
+        else this.Log.message(`Events loaded in ${formatMs(performance.now() - startTime)}`)
         if (this.eventWarnings != 0 && this.options.ignoreWarnings == false) this.Log.info(`With ${this.commandWarnings} warnings!`, !this.options.debug)
 
         return result

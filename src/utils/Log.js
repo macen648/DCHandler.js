@@ -1,6 +1,7 @@
 // Custom Console logs ;)
 const dayjs = require('dayjs')
 const chalk = require('chalk')
+const path = require('path')
 
 class Log {
     /**
@@ -11,6 +12,10 @@ class Log {
      */
     constructor(message){
         this._options = {}
+
+        const _path = path.join(require.main.path, './', 'package.json')
+        this.EX_package = require(_path)
+        this.DCH_package = require('../../package.json')
 
         if(message){
             if(!message) return
@@ -110,6 +115,39 @@ class Log {
         console.log("")
         return this
     }
+
+
+    /**
+     * Console.Log project versions.
+     * @returns Client
+     */
+    versions() {
+        this.custom('VERSION', '#cccccc', '')
+            .raw(`DCH: v${this.DCH_package.version}`)
+            .raw(`Discord.js: v${this.EX_package.dependencies["discord.js"]}`)
+            .raw(`Node: ${process.version}`)
+            .raw(`Package ${this.EX_package.name}: v${this.EX_package.version}`)
+            .custom('VERSION', '#cccccc', '')
+        return this
+    }
+
+    /**
+     * Console Logs **DCHandler** Client stats.
+     * 
+     * @param {handlerClient} DCH handlerClient 
+     * @returns Log
+     */
+    stats(DCH) {
+        if(!DCH) return this
+        this.custom('STATS', '#cccccc', '')
+            .raw(`${this.EX_package.name} v${this.EX_package.version}`)
+            .raw(`Default prefix: ${DCH.options.PREFIX}`)
+            .raw(`Command count: ${DCH.DiscordClient.commands.size}\nEvent count: ${DCH.DiscordClient.eventCount}`)
+            .raw(`Up time: ${DCH.DiscordClient.uptime}\nPing: ${DCH.DiscordClient.ws.ping} ms`)
+            .custom('STATS', '#cccccc', '')
+        return this
+    }
+
 }
 
 module.exports = Log

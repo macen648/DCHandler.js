@@ -15,10 +15,12 @@ const client = new Client({
 
 //const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events' })
 
-const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events', MongoURI: MONGOURI })
+//const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events', MongoURI: MONGOURI })
+const Handler = new HandlerClient(client)
 
-
-//Handler.info()
+// Handler.stats()
+Handler.version()
+// Handler.versions()
 
 client.login(TOKEN)
 

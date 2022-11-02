@@ -1,10 +1,9 @@
+const { clientDefaults } = require('./utils/DefaultValues')
 const MessageHandler = require('./MessageHandler')
 const { DCH_ERROR } = require('./utils/ERROR')
 const Registry = require('./Registry')
-const DEFAULTS = require('./utils/Defaults')
 const dotenv = require('dotenv')
 const Ready = require('./Ready')
-const Info = require('./utils/Info')
 const path = require("path")
 const Log = require('./utils/Log')
 const fs = require('fs')
@@ -44,6 +43,8 @@ class Client {
 
         this.DiscordClient = DiscordClient
 
+        this._version = require('../package.json').version
+
         this._cli()
 
         this.loadConfig(config)  
@@ -62,20 +63,29 @@ class Client {
     }
 
     /**
-     * Console.Log handler info.
-     * @returns Client
-     */
-    info(){
-        new Info(this).all()
-        return this
-    }
-
-    /**
      * Console.Log handler stats.
      * @returns Client
      */
     stats(){
-        new Info(this).stats()
+        this.Log.stats(this)
+        return this
+    }
+
+    /**
+     * Console.Log handler version.
+     * @returns Client
+     */
+    version(){
+        this.Log.message(`DCH: v${this._version}`)
+        return this
+    }
+
+    /**
+     * Console.Log project versions.
+     * @returns Client
+     */
+    versions(){
+        this.Log.versions()
         return this
     }
 
@@ -109,7 +119,7 @@ class Client {
      */
     loadConfig(config) {
         const _Log = new Log().addOptions({ hide: this.options.hideOutput })
-        const defaultConfigPath = path.join(require.main.path, './', `${DEFAULTS.ConfigFile}.json`)
+        const defaultConfigPath = path.join(require.main.path, './', `${clientDefaults.ConfigFile}.json`)
         var loadedOptions = {}
 
         //custom config.json
@@ -121,7 +131,7 @@ class Client {
 
         //default config.json
         } else if (fs.existsSync(defaultConfigPath) == true){
-            const result =  this._loadJsonToOptions(defaultConfigPath, DEFAULTS.ConfigFile)
+            const result = this._loadJsonToOptions(defaultConfigPath, clientDefaults.ConfigFile)
             loadedOptions = { ...loadedOptions, ...result }
         } 
 
@@ -145,13 +155,13 @@ class Client {
         
         //defaults
         if (!this.options.commandPath){
-            this.options.commandPath = DEFAULTS.CommandFolder
-            loadedOptions = { ...loadedOptions, CommandFolder: DEFAULTS.CommandFolder }
+            this.options.commandPath = clientDefaults.CommandFolder
+            loadedOptions = { ...loadedOptions, CommandFolder: clientDefaults.CommandFolder }
         } 
 
         if (!this.options.PREFIX){
-            this.options.PREFIX = DEFAULTS.PREFIX
-            loadedOptions = { ...loadedOptions, ...DEFAULTS.PREFIX }
+            this.options.PREFIX = clientDefaults.PREFIX
+            loadedOptions = { ...loadedOptions, ...clientDefaults.PREFIX }
         } 
 
         if (this.options.MongoURI){
@@ -179,7 +189,7 @@ class Client {
             } else if (process.argv[i] === '--clear') {
                 this.options.hideOutput = true
             } else if (process.argv[i] === '--v' || process.argv[i] === '--version') {
-                new Info(this).versions()
+                new Log().versions()
             }
         }
 

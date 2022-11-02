@@ -1,7 +1,7 @@
-const DEFAULT = {
+const clientDefaults = {
     CommandFolder: 'commands',
     ConfigFile: 'config',
     PREFIX: '$'
 }
 
-module.exports = DEFAULT
+module.exports = { clientDefaults }
