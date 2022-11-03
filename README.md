@@ -31,6 +31,7 @@ const client = new Client({
 })
 
 const handler = new Handler.HandlerClient(client, { // Pass in discord.js client and options.
+                                                    // All options are fully optional.  
     commandPath: "commands", // Commands folder.
     eventPath: "events", // Commands folder.
     MongoURI: "mongodb://localhost:27017/test", // URI to connect to a mongoDB database
@@ -168,6 +169,12 @@ module.exports = {
 }
 ```
 
+# Options
+- PREFIX [string]
+- commandPath [string]
+- eventPath [string]
+- MongoURI [string]
+
 # Start up Flags
 - --debug
 - --clear
@@ -199,19 +206,8 @@ node index.js --v --p-v
 ## AudioBoi
 My music bot that is built with DCHandler.js.
 
-## Extra Resources
-- Discord documentation:
-     - https://discord.js.org/#/
-
-- Worn off keys: 
-     - https://www.youtube.com/channel/UChPrh75CmPP9Ig6jISPnfNA
-     - https://www.youtube.com/watch?v=JMmUW4d3Noc&list=PLaxxQQak6D_f4Z5DtQo0b1McgjLVHmE8Q&ab_channel=WornOffKeys (How to Discord.js playlist)
-
-- w3schools:
-    - https://www.w3schools.com/js/ (js)
-
-- My discord bot template:
-    - https://github.com/macen648/discordBotTemplate
+## Example bot with this package
+My repo: [Example-Discord-Bot](https://github.com/macen648/Example-Discord-Bot)
 
 ## Me
  - Discord: macen#0001

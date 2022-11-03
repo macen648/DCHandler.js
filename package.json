@@ -1,9 +1,8 @@
 {
   "name": "dchandler.js",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "Discord bot handler",
   "main": "index.js",
-  "scripts": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/macen648/DCHandler"
@@ -11,17 +10,22 @@
   "keywords": [
     "discord",
     "bot",
+    "discord-bot",
+    "command-handler",
     "handler",
     "dchandler",
+    "dchandler.js",
     "discord.js",
-    "command"
+    "v14",
+    "command",
+    "commands"
   ],
-  "author": "Macen",
+  "author": "Macen <3",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/macen648/DCHandler/issues"
   },
-  "homepage": "https://github.com/macen648/DCHandler",
+  "homepage": "https://github.com/macen648/DCHandler#README",
   "dependencies": {
     "chalk": "^4.1.2",
     "dayjs": "^1.11.6",
