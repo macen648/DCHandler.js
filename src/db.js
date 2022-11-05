@@ -1,7 +1,7 @@
 const { DCH_DB_ERROR } = require('./utils/ERROR')
 const guildSchema = require('./models/guild')
 const mongoose = require("mongoose")
-const Log = require('./utils/Log')
+const { FLogs } = require('formatted-logs')
 
 class db {
     /**
@@ -13,7 +13,7 @@ class db {
 
         this.options = options
 
-        this.Log = new Log().addOptions({ hide: this.options.hideOutput })
+        this.FLog = new FLogs().addOptions({ hide: this.options.hideOutput })
     }
 
     /**
@@ -33,7 +33,7 @@ class db {
      * @returns db
      */
     login(MONGO_URI) {
-        this.Log.custom('DB', '#00FF00', `Connecting to MongoDB...`)
+        this.FLog.log(`Connecting to MongoDB...`, 'DB', '#00FF00')
         this.connect(MONGO_URI)
         return this
     }
@@ -80,7 +80,7 @@ class db {
      */
     onConnecting(){
         mongoose.connection.on('connecting', () => {
-            this.Log.custom('DB', '#00FF00', `Connecting to MongoDB`)
+            this.FLog.log(`Connecting to MongoDB`, 'DB', '#cccccc')
         })
         return this
     }
@@ -91,7 +91,7 @@ class db {
      */
     onConnected(){
         mongoose.connection.on('connected', () => {
-            this.Log.custom('DB', '#00FF00', `Connected to MongoDB`)
+            this.FLog.log(`Connected to MongoDB`, 'DB', '#00FF00')
         })
         return this
     }
@@ -102,7 +102,7 @@ class db {
      */
     onDisconnecting(){
         mongoose.connection.on('disconnecting', () => {
-            this.Log.custom('DB', '#00FF00', `disconnecting from MongoDB`)
+            this.FLog.log( `Disconnecting from MongoDB`, 'DB', '#00FF00')
         })
         return this
     }
@@ -114,7 +114,7 @@ class db {
      */
     onDisconnected(){
         mongoose.connection.on('disconnected', () => {
-            this.Log.custom('DB', '#cccccc', `Disconnected from MongoDB`)
+            this.FLog.log(`Disconnected from MongoDB`, 'DB', '#cccccc')
         })
         return this
     }
@@ -152,7 +152,7 @@ class db {
         }, {
             upsert: true
         }).catch((err) => {
-            this.Log.custom('DB', '#FF0000', 'Unable to curl MongoDB (Likely not connected?)')
+            this.FLog.log('Unable to curl MongoDB (Likely not connected?)', 'DB', '#FF0000')
         })
 
         return result ? result : undefined
@@ -171,7 +171,7 @@ class db {
         const result = await guildSchema.findOne({
             _id: message.guild.id
         }).catch((err) => {
-            this.Log.custom('DB', '#FF0000', 'Unable to curl MongoDB (Likely not connected?)')
+            this.FLog.log('Unable to curl MongoDB (Likely not connected?)', 'DB', '#FF0000',)
         })
         return result ? result.PREFIX : undefined
     }

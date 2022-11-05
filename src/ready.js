@@ -1,4 +1,4 @@
-const Log = require('./utils/Log')
+const { FLogs } = require('formatted-logs')
 
 class Ready{
     /**
@@ -13,11 +13,11 @@ class Ready{
 
         this.options = options
 
-        this.Log = new Log().addOptions({ hide: options.hideOutput })
+        this.FLogs = new FLogs().addOptions({ hide: options.hideOutput })
 
         client.on('ready', client => {
-            this.Log.message(`🤖 ${client.user.tag} / Client id#${client.user.id} is online!`)
-            this.Log.message(`Now listening for ${client.commands.size} commands with default prefix: ${this.options.PREFIX}`)
+            this.FLogs.log(`🤖 ${client.user.tag} / Client id#${client.user.id} is online!`)
+            this.FLogs.log(`Now listening for ${client.commands.size} commands with default prefix: ${this.options.PREFIX}`)
         })   
     }
 }

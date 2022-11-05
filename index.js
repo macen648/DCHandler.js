@@ -1,30 +1,33 @@
-const { DCH_CMD_ERROR, DCH_DB_ERROR, DCH_LOAD_ERROR, DCH_ERROR } = require('./src/utils/ERROR')
-
+// Made with love - Macen <3
+// https://github.com/macen648/DCHandler
 module.exports = {
-    //Core
-    HandlerClient: require('./src/Client'),
-    MessageHandler: require('./src/MessageHandler'),
-    Registry: require('./src/Registry'),
-    Ready: require('./src/Ready'),  
-    db: require('./src/db'),
+	// Core
+	HandlerClient: require('./src/Client'),
+	MessageHandler: require('./src/MessageHandler'),
+	Registry: require('./src/Registry'),
+	Ready: require('./src/Ready'),
+	db: require('./src/db'),
 
-    //utils
-    Log: require('./src/utils/Log'),
-    parseMs: require('./src/utils/parseMs'),
-    DCH_CMD_ERROR, 
-    DCH_DB_ERROR,
-    DCH_LOAD_ERROR, 
-    DCH_ERROR,
+	// Utils
+	formatMS: require('./src/utils/formatMS'),
+	
+	//Errors
+	DCH_CMD_ERROR: require('./src/utils/ERROR').DCH_CMD_ERROR,
+	DCH_DB_ERROR: require('./src/utils/ERROR').DCH_DB_ERROR,
+	DCH_LOAD_ERROR: require('./src/utils/ERROR').DCH_LOAD_ERROR,
+	DCH_ERROR: require('./src/utils/ERROR').DCH_ERROR,
 
-    //Const
-    DefaultValues: require('./src/utils/DefaultValues'),
+	//formatted-logs
+	FLogs: require('formatted-logs').FLogs,
+	Paragraph: require('formatted-logs').Paragraph,
+	colorNameToHex: require('formatted-logs').colorNameToHex,
 
-    //version
-    version: require('./package.json').version,
+	// Const
+	DefaultValues: require('./src/utils/DefaultValues'),
 
-    //models
-    guild: require('./src/models/guild'),
+	// Version
+	version: require('./package.json').version,
 
+	// Models
+	guild: require('./src/models/guild'),
 }
-
-//Made with love - Macen <3

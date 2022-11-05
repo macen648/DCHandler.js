@@ -1,5 +1,5 @@
 # DCHandler.js
-[![NPM Badge](https://nodei.co/npm/dchandler.png?downloads=true&stars=true)](https://nodei.co/npm/dchandler)
+[![NPM Badge](https://nodei.co/npm/dchandler.png?downloads=true&stars=true)](https://nodei.co/npm/dchandler.js)
 
 ## About
 DCHandler.js is the simple, powerful and straight to the point command handler for discord.js v14. 

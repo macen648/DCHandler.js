@@ -19,7 +19,7 @@ const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events', Mo
 // const Handler = new HandlerClient(client)
 
 // Handler.stats()
-Handler.version()
+// Handler.version()
 // Handler.versions()
 
 client.login(TOKEN)

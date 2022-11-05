@@ -1,5 +1,5 @@
 const { DCH_CMD_ERROR } = require('./utils/ERROR')
-const Log = require('./utils/Log')
+const { FLogs } = require('formatted-logs')
 const db = require('./db')
 
 class MessageHandler{
@@ -15,7 +15,7 @@ class MessageHandler{
 
         this.client = client
 
-        this.Log = new Log().addOptions({ hide: options.hideOutput })
+        this.FLog = new FLogs().addOptions({ hide: options.hideOutput })
 
         this.db = new db(options)
         
@@ -49,7 +49,7 @@ class MessageHandler{
 
             if (cmd) cmd.execute(this.client, message, args).catch(error => {
                 new DCH_CMD_ERROR(`Command '${command}' exited with Error`)
-                this.Log.raw(error)
+                this.FLog.raw(error)
             })
         })
     }
