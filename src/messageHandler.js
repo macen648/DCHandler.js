@@ -15,8 +15,6 @@ class MessageHandler{
 
         this.client = client
 
-        this.FLog = new FLogs().addOptions({ hide: options.hideOutput })
-
         this.db = new db(options)
         
         this.options = options
@@ -49,7 +47,7 @@ class MessageHandler{
 
             if (cmd) cmd.execute(this.client, message, args).catch(error => {
                 new DCH_CMD_ERROR(`Command '${command}' exited with Error`)
-                this.FLog.raw(error)
+                FLogs.raw(error)
             })
         })
     }

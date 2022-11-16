@@ -19,8 +19,6 @@ class Registry {
 
         this.client.commands = new Discord.Collection()
 
-        this.FLog = new FLogs().addOptions({ debug: options.debug, hide: options.hideOutput })
-
         this.options = options
 
         this.commandPath = commandPath
@@ -38,7 +36,7 @@ class Registry {
     loadCommands(){
         var startTime = performance.now()
 
-        this.FLog.log(`Loading commands...`)
+        FLogs.log(`Loading commands...`)
 
         const result = this.registerDirectory(this.commandPath, this.registerCommand)
 
@@ -48,12 +46,12 @@ class Registry {
         } 
 
         if(result.status === "empty"){
-            this.FLog.warn(`Commands folder is empty.\nNo commands loaded.`)
+            FLogs.warn(`Commands folder is empty.\nNo commands loaded.`)
             return result
         } 
 
-        this.FLog.log(`Commands loaded in ${formatMS(performance.now() - startTime)}\n`)
-        if (this.commandWarnings != 0 && this.options.ignoreWarnings == false || this.options.debug == true) this.FLog.warn(`Loaded with ${this.commandWarnings} warnings!`)
+        FLogs.log(`Commands loaded in ${formatMS(performance.now() - startTime)}\n`)
+        if (this.commandWarnings != 0 && this.options.ignoreWarnings == false || this.options.debug == true) FLogs.warn(`Loaded with ${this.commandWarnings} warnings!`)
 
         return result
     }
@@ -62,7 +60,6 @@ class Registry {
  * @api private 
  */
     registerCommand(file, _filePath, _this) {
-        _this.FLog.addOptions({ hide: !_this.options.debug })
         const filePath = path.join(require.main.path, _filePath, file)
 
         var command = require(filePath)
@@ -70,7 +67,7 @@ class Registry {
         try {
             if (Object.keys(command).length === 0){
                 _this.commandWarnings++
-                _this.FLog.warn(`Command file '${file}' isn't correct (Missing Command Structure).\nSkipping.`)
+                FLogs.warn(`Command file '${file}' isn't correct (Missing Command Structure).\nSkipping.`)
                 return 
             } 
 
@@ -79,17 +76,17 @@ class Registry {
             if(command.name.includes(" ")){
                 command.name = command.name.replace(/ /g, "_")
                 _this.commandWarnings++
-                _this.FLog.warn(`Command file '${file}' name contains spaces.\nConverted to '${command.name}'.`)
+                FLogs.warn(`Command file '${file}' name contains spaces.\nConverted to '${command.name}'.`)
             } 
 
             if (_this.client.commands.some(cmds => cmds.name === command.name)) {
-                _this.FLog.log(` -> Command with the name ${command.name.toLowerCase()} already exists, Loaded anyways.`, 'CMD', '#fff100')
+                FLogs.log(` -> Command with the name ${command.name.toLowerCase()} already exists, Loaded anyways.`, 'CMD', '#fff100')
                 _this.commandWarnings++
                 return _this.client.commands.set(command.name.toLowerCase(), command)
             }
 
             _this.client.commands.set(command.name.toLowerCase(), command)
-            _this.FLog.log(` -> Loaded command '${command.name.toLowerCase()}'`, 'CMD', '#00FF00')
+            FLogs.log(` -> Loaded command '${command.name.toLowerCase()}'`, 'CMD', '#00FF00')
 
         } catch (error) {
             new DCH_LOAD_ERROR(`Command file '${file.split('.')[0]}' Had a error loading.\n${error}`)
@@ -97,7 +94,7 @@ class Registry {
 
         delete require.cache[require.resolve(path.join(require.main.path, _filePath, file))]
 
-        _this.FLog.addOptions({ hide: false })
+        FLogs.addOptions({ hide: false })
 
         return command
     }
@@ -110,7 +107,7 @@ class Registry {
 
         this.client.eventCount = 0
 
-        this.FLog.log(`Loading events...`)
+        FLogs.log(`Loading events...`)
 
         const result = this.registerDirectory(this.eventPath, this.registerEvent)
 
@@ -121,12 +118,12 @@ class Registry {
 
 
         if(result.status === "empty"){
-            this.FLog.warn(`Event folder is empty.\nNo commands loaded.`)
+            FLogs.warn(`Event folder is empty.\nNo commands loaded.`)
             return result
         }  
 
-        this.FLog.log(`Events loaded in ${formatMS(performance.now() - startTime)}`)
-        if (this.eventWarnings != 0 && this.options.ignoreWarnings == false || this.options.debug == true) this.FLog.warn(`Loaded With ${this.commandWarnings} warnings!`)
+        FLogs.log(`Events loaded in ${formatMS(performance.now() - startTime)}`)
+        if (this.eventWarnings != 0 && this.options.ignoreWarnings == false || this.options.debug == true) FLogs.warn(`Loaded With ${this.commandWarnings} warnings!`)
         return result
     }  
 
@@ -134,7 +131,7 @@ class Registry {
  * @api private 
  */    
     registerEvent(file, _filePath, _this) {
-        _this.FLog.addOptions({ hide: !_this.options.debug })
+        
         const filePath = path.join(require.main.path, _filePath, file)
 
         var event = require(filePath)
@@ -142,7 +139,7 @@ class Registry {
         try {
             _this.client.on(file.split('.')[0], event.bind(null, _this.client))
             _this.client.eventCount++
-            _this.FLog.log(` -> Loaded event '${file.split('.')[0]}'`, 'EVNT', '#00FF00')
+            FLogs.log(` -> Loaded event '${file.split('.')[0]}'`, 'EVNT', '#00FF00')
 
         } catch (error) {
             new DCH_LOAD_ERROR(`Event file '${file.split('.')[0]}' Had a error loading.\n${error}`)
@@ -150,7 +147,7 @@ class Registry {
 
         delete require.cache[require.resolve(path.join(require.main.path, _this.eventPath, file))]
 
-        _this.FLog.addOptions({ hide: false })
+        FLogs.addOptions({ hide: false })
         return event
     }
 
@@ -160,14 +157,14 @@ class Registry {
     registerDirectory(path, registerFile) {
         try {
             function registerSubDirectories(path, _this) {
-                _this.FLog.addOptions({ hide: _this.options.debug })
+                
                 const dirs = fs.readdirSync(path, { withFileTypes: true }).filter(item => item.isDirectory()).map(item => item.name)
                 if (!dirs) return
 
                 for (const dir of dirs) {
                     if (fs.readdirSync(`${path}/${dir}`) == '') {
                         _this.commandWarnings++
-                        return _this.FLog.warn(`Folder ${dir} is empty.`)
+                        return FLogs.warn(`Folder ${dir} is empty.`)
                     }
                     registerSubDirectories(`${path}/${dir}`, _this)
                     fs.readdirSync(`${path}/${dir}`).filter(file => file.endsWith(".js")).forEach(file => {
@@ -183,7 +180,7 @@ class Registry {
 
             registerSubDirectories(path, this)
 
-            this.FLog.addOptions({ hide: false })
+            FLogs.addOptions({ hide: false })
 
             return { status: "success", commandWarnings: this.commandWarnings, eventWarnings: this.eventWarnings }
         } catch (error) {

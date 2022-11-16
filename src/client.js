@@ -1,11 +1,11 @@
 const { clientDefaults } = require('./utils/DefaultValues')
 const MessageHandler = require('./MessageHandler')
 const { DCH_ERROR } = require('./utils/ERROR')
+const { FLogs, FParagraph } = require('formatted-logs')
 const Registry = require('./Registry')
 const dotenv = require('dotenv')
 const Ready = require('./Ready')
 const path = require('path')
-const { FLogs } = require('formatted-logs')
 const fs = require('fs')
 const db = require('./db')
 
@@ -57,7 +57,7 @@ class Client {
             this.db.ready()
         }
 
-        this.FLogs = new FLogs().addOptions({ hide: this.options.hideOutput })
+        FLogs.addOptions({ hide: this.options.hideOutput })
 
         DiscordClient.DCHandler = this
 
@@ -93,8 +93,6 @@ class Client {
      * @returns loaded options
      */
     loadConfig(config) {
-        const _FLogs = new FLogs().addOptions({ hide: this.options.hideOutput })
-       _FLogs.addOptions({ hide: !this.options.debug })
         const defaultConfigPath = path.join(require.main.path, './', `${clientDefaults.ConfigFile}.json`)
         var loadedOptions = {}
 
@@ -116,16 +114,16 @@ class Client {
         if (!result.error) {
             if ((Object.keys(result.parsed).length !== 0)) {
                 this.addOptions(result.parsed)
-                _FLogs.info("Loaded .env into options.")
+                FLogs.info("Loaded .env into options.")
                 loadedOptions = { ...loadedOptions, ...result.parsed }
             }
-            else _FLogs.warn(".env is empty.")
+            else FLogs.warn(".env is empty.")
         } 
 
         //custom object
         if (typeof config === 'object'){
             this.addOptions(config)
-            _FLogs.info(`Loaded constructor into options.`)
+            FLogs.info(`Loaded constructor into options.`)
             loadedOptions = { ...loadedOptions, ...config }
         } 
         
@@ -152,14 +150,14 @@ class Client {
      * @returns Client
      */
     stats() {
-        this.FLogs.log('', 'STATS', '#cccccc')
-            .newLine(`${this.EX_package.name} v${this.EX_package.version}`)
-            .newLine(`Default prefix: ${this.options.PREFIX}`)
-            .newLine(`Command count: ${this.DiscordClient.commands.size}\nEvent count: ${this.DiscordClient.eventCount}`)
-            .newLine(`Up time: ${this.DiscordClient.uptime}\nPing: ${this.DiscordClient.ws.ping} ms`)
-            .log('', 'STATS', '#cccccc')
+        FParagraph.boxed().title('STATS')
+                  .body(
+`${this.EX_package.name} v${this.EX_package.version}
+Default prefix: ${this.options.PREFIX}
+Command count: ${this.DiscordClient.commands.size}\nEvent count: ${this.DiscordClient.eventCount}
+Up time: ${this.DiscordClient.uptime}\nPing: ${this.DiscordClient.ws.ping} ms`
+                 ).footer('STATS')
         return this
-
     }
 
     /**
@@ -167,7 +165,7 @@ class Client {
      * @returns Client
      */
     version() {
-        this.FLogs.log(`DCH: v${this.DCH_package.version}`)
+        FLogs.log(`DCH: v${this.DCH_package.version}`)
         return this
     }
 
@@ -176,12 +174,13 @@ class Client {
      * @returns Client
      */
     versions() {
-        this.FLogs.log('', 'VERSION', '#cccccc',)
-            .newLine(`DCH: v${this.DCH_package.version}`)
-            .newLine(`Discord.js: v${this.EX_package.dependencies["discord.js"]}`)
-            .newLine(`Node: ${process.version}`)
-            .newLine(`Package ${this.EX_package.name}: v${this.EX_package.version}`)
-            .log('', 'VERSION', '#cccccc',)
+        FParagraph.boxed().title('VERSION')
+                  .body(
+`DCH: v${this.DCH_package.version}
+Discord.js: v${this.EX_package.dependencies["discord.js"]}
+Node: ${process.version}
+Package ${this.EX_package.name}: v${this.EX_package.version}`
+                 ).footer('VERSION')
         return this
     }
 
@@ -202,31 +201,31 @@ class Client {
             } else if (process.argv[i] === '--clear') {
                 this.options.hideOutput = true
             } else if (process.argv[i] === '--v' || process.argv[i] === '--version') {
-                new FLogs().log(`DCH: v${this.DCH_package.version}`)
+                FLogs.log(`DCH: v${this.DCH_package.version}`)
             }else if (process.argv[i] === '--p-v' || process.argv[i] === '--project-versions') {
-                new FLogs().log('', 'VERSION', '#cccccc',)
-                    .newLine(`DCH: v${this.DCH_package.version}`)
-                    .newLine(`Discord.js: v${this.EX_package.dependencies["discord.js"]}`)
-                    .newLine(`Node: ${process.version}`)
-                    .newLine(`Package ${this.EX_package.name}: v${this.EX_package.version}`)
-                    .log('', 'VERSION', '#cccccc',)
+                FParagraph.boxed().title('VERSION')
+                          .body(
+`DCH: v${this.DCH_package.version}
+Discord.js: v${this.EX_package.dependencies["discord.js"]}
+Node: ${process.version}
+Package ${this.EX_package.name}: v${this.EX_package.version}`
+                         ).footer('VERSION')
             }
         }
-
     }
 
 /**
  * @api private 
  */
     _start(){
-        this.FLogs.log('🚀 Starting bot...')
+        FLogs.log('🚀 Starting bot...')
 
         this.Registry = new Registry(this.DiscordClient, this.options.commandPath, this.options)
 
         this.Registry.loadCommands()
         if (this.options.eventPath) this.Registry.loadEvents()
 
-        if (this.options.ignoreWarnings == false && this.Registry.commandWarnings != 0 || this.Registry.eventWarnings != 0) this.FLogs.info('To view warnings use (--debug) or remove this message with (--ignore-warnings)', !this.options.debug)
+        if (this.options.ignoreWarnings == false && this.Registry.commandWarnings != 0 || this.Registry.eventWarnings != 0) FLogs.info('To view warnings use (--debug) or remove this message with (--ignore-warnings)')
 
         this.MessageHandler = new MessageHandler(this.DiscordClient, this.options).listen()
 
@@ -237,7 +236,6 @@ class Client {
      * @api private 
      */
     _loadJsonToOptions(path, file){
-        const Flogs = new FLogs().addOptions({ hide: this.options.hideOutput })
         var config
         try {
             config = require(path)
@@ -247,11 +245,11 @@ class Client {
                     config = config.Handler
                 } 
                 else this.addOptions(config)
-                Flogs.info(`Loaded ${file}.json into options.`)
+                FLogs.info(`Loaded ${file}.json into options.`)
             }
-            else Flogs.warn(`${file}.json is empty.`)
+            else FLogs.warn(`${file}.json is empty.`)
         } catch (error) {
-            Flogs.warn(`Had an error trying to load Path: ${path} File: ${file} (Likely empty).`)
+            FLogs.warn(`Had an error trying to load Path: ${path} File: ${file} (Likely empty).`)
         }
         return config
     }

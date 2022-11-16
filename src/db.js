@@ -13,7 +13,6 @@ class db {
 
         this.options = options
 
-        this.FLog = new FLogs().addOptions({ hide: this.options.hideOutput })
     }
 
     /**
@@ -33,7 +32,7 @@ class db {
      * @returns db
      */
     login(MONGO_URI) {
-        this.FLog.log(`Connecting to MongoDB...`, 'DB', '#00FF00')
+        FLogs.log(`Connecting to MongoDB...`, 'DB', '#00FF00')
         this.connect(MONGO_URI)
         return this
     }
@@ -80,7 +79,7 @@ class db {
      */
     onConnecting(){
         mongoose.connection.on('connecting', () => {
-            this.FLog.log(`Connecting to MongoDB`, 'DB', '#cccccc')
+            FLogs.log(`Connecting to MongoDB`, 'DB', '#cccccc')
         })
         return this
     }
@@ -91,7 +90,7 @@ class db {
      */
     onConnected(){
         mongoose.connection.on('connected', () => {
-            this.FLog.log(`Connected to MongoDB`, 'DB', '#00FF00')
+            FLogs.log(`Connected to MongoDB`, 'DB', '#00FF00')
         })
         return this
     }
@@ -102,7 +101,7 @@ class db {
      */
     onDisconnecting(){
         mongoose.connection.on('disconnecting', () => {
-            this.FLog.log( `Disconnecting from MongoDB`, 'DB', '#00FF00')
+            FLogs.log( `Disconnecting from MongoDB`, 'DB', '#00FF00')
         })
         return this
     }
@@ -114,7 +113,7 @@ class db {
      */
     onDisconnected(){
         mongoose.connection.on('disconnected', () => {
-            this.FLog.log(`Disconnected from MongoDB`, 'DB', '#cccccc')
+            FLogs.log(`Disconnected from MongoDB`, 'DB', '#cccccc')
         })
         return this
     }
@@ -152,7 +151,7 @@ class db {
         }, {
             upsert: true
         }).catch((err) => {
-            this.FLog.log('Unable to curl MongoDB (Likely not connected?)', 'DB', '#FF0000')
+            FLogs.log('Unable to curl MongoDB (Likely not connected?)', 'DB', '#FF0000')
         })
 
         return result ? result : undefined
@@ -171,7 +170,7 @@ class db {
         const result = await guildSchema.findOne({
             _id: message.guild.id
         }).catch((err) => {
-            this.FLog.log('Unable to curl MongoDB (Likely not connected?)', 'DB', '#FF0000',)
+            FLogs.log('Unable to curl MongoDB (Likely not connected?)', 'DB', '#FF0000',)
         })
         return result ? result.PREFIX : undefined
     }

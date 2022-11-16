@@ -17,11 +17,6 @@ module.exports = {
 	DCH_LOAD_ERROR: require('./src/utils/ERROR').DCH_LOAD_ERROR,
 	DCH_ERROR: require('./src/utils/ERROR').DCH_ERROR,
 
-	//formatted-logs
-	FLogs: require('formatted-logs').FLogs,
-	Paragraph: require('formatted-logs').Paragraph,
-	colorNameToHex: require('formatted-logs').colorNameToHex,
-
 	// Const
 	DefaultValues: require('./src/utils/DefaultValues'),
 
