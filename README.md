@@ -25,7 +25,7 @@ Basic setup
 index.js
 ```js
 import { Client, GatewayIntentBits } from 'discord.js'
-import HandlerClient from '../../index.js'
+import HandlerClient from 'dchandler.js'
 
 const client = new Client({
     intents: [], // Your bots required Intents.
