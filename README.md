@@ -5,6 +5,7 @@
 DCHandler.js is the simple, powerful and straight to the point command handler for discord.js v14. 
 
 ## Features
+* ES6
 * Powerful and simple.
 * Easy object based command structure.
 * Per-Guild prefix(s) support using mongoDB.
@@ -23,14 +24,14 @@ Basic setup
 
 index.js
 ```js
-const {Client, GatewayIntentBits} = require('discord.js')
-const Handler = require('dchandler.js')
+import { Client, GatewayIntentBits } from 'discord.js'
+import HandlerClient from '../../index.js'
 
 const client = new Client({
     intents: [], // Your bots required Intents.
 })
 
-const handler = new Handler.HandlerClient(client, { // Pass in discord.js client and options.
+const handler = new HandlerClient(client, { // Pass in discord.js client and options.
                                                     // All options are fully optional.  
     commandPath: "commands", // Commands folder.
     eventPath: "events", // Commands folder.
@@ -41,7 +42,7 @@ const handler = new Handler.HandlerClient(client, { // Pass in discord.js client
 client.login('token')// Your bots token.
 ```
 # Config
-By default DCH will try and load config.json or.env by default. 
+By default DCH will try and load config.json or.env. 
 
 If it is unable to locate config.json or .env default values will be loaded instead.
       
@@ -65,12 +66,12 @@ const handler = new Handler.HandlerClient(client, { //options
 
 Pass in path to json file.
 ```js
-const handler = new Handler.HandlerClient(client, 'config')
+const handler = new HandlerClient(client, 'config')
 ```
 
 Auto load a .env or config.json
 ```js
-const handler = new Handler.HandlerClient(client)
+const handler = new HandlerClient(client)
 ```
 
 ## A .json file can be structured as such.
@@ -112,7 +113,7 @@ The default prefix is used instead.
 # Basic command
 ping.js
 ```js
-module.exports = {
+export default {
 /**
     Information about the command.
     Name
@@ -129,12 +130,17 @@ module.exports = {
     },
 }
 ```
+Commands can be Exported as:
+* export default {}
+* export const command = {}
+* export const Command = {}
+
 
 # Basic Event
 guildCreate.js
 ```js
 // Unlike a Command the name of the file is what events get identified by.
-module.exports = (client, guild) => { // Options needed for this event, client is always required. Guild is the event callback.
+export default (client, guild) => { // Options needed for this event, client is always required. Guild is the event callback.
     guild.systemChannel.send(`Hello!`).then(sentMessage => {
         sentMessage.react('👋')
         console.log(`Joined the guild: ${guild.name}!`)
@@ -153,12 +159,17 @@ client.on('guildCreate', guild => {
 */
 
 ```
+Events can be Exported as:
+* export default {}
+* export const event = {}
+* export const Event = {}
+
 # Change prefix command
 changePrefix.js
 ```js
-const { db } = require('dchandler.js')
+import { db } from 'dchandler.js'
 
-module.exports = {
+export default {
     name: 'changePrefix',
     aliases: ['cp'],
     execute(client, message, args) {

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     name: 'ping',
     showHelp: true,
     macenWasHere: true,

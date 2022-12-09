@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     name: 'upTime',
     aliases: [],
     execute(client, message) {

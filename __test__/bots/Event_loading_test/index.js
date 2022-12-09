@@ -1,7 +1,8 @@
-const { Client, GatewayIntentBits } = require('discord.js')
-const { HandlerClient } = require('../../../index')
+import { Client, GatewayIntentBits } from 'discord.js'
+import HandlerClient from '../../../index.js'
+import fs from 'fs'
 
-const { TOKEN } = require('../../config.json')
+const config = JSON.parse(fs.readFileSync('../../config.json'))
 
 const client = new Client({
     intents: [
@@ -19,7 +20,7 @@ const Handler = new HandlerClient(client, {
     PREFIX: "$" 
 })
 
-Handler.stats()
 
-client.login(TOKEN)
+
+client.login(config.TOKEN)
 

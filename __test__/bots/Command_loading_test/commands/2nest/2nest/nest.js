@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     name: 'nest',
     aliases: [],
     execute(client, message, args) {

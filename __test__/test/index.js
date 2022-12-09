@@ -1,8 +1,8 @@
-const { Client, GatewayIntentBits } = require('discord.js')
-const { HandlerClient } = require('../../index')
+import  { Client, GatewayIntentBits } from 'discord.js'
+import HandlerClient from '../../index.js'
+import fs from 'fs'
 
-const { TOKEN, MONGOURI } = require('../config.json')
-
+const config = JSON.parse(fs.readFileSync('../config.json'))
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -15,12 +15,13 @@ const client = new Client({
 
 //const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events' })
 
-const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events', MongoURI: MONGOURI })
-// const Handler = new HandlerClient(client)
+//const Handler = new HandlerClient(client, { PREFIX: ".", eventPath: 'events', MongoURI: config.MONGO_URI })
+const Handler = new HandlerClient(client)
+
 
 // Handler.stats()
 // Handler.version()
 // Handler.versions()
 
-client.login(TOKEN)
+client.login(config.TOKEN)
 

@@ -1,15 +1,15 @@
-const { clientDefaults } = require('./utils/DefaultValues')
-const MessageHandler = require('./MessageHandler')
-const { DCH_ERROR } = require('./utils/ERROR')
-const { FLogs, FParagraph } = require('formatted-logs')
-const Registry = require('./Registry')
-const dotenv = require('dotenv')
-const Ready = require('./Ready')
-const path = require('path')
-const fs = require('fs')
-const db = require('./db')
+import dotenv from 'dotenv'
+import FLogs, { FParagraph } from 'formatted-logs'
+import MessageHandler from './MessageHandler.js'
+import Registry from './Registry.js'
+import Ready from './Ready.js'
+import db from './db.js'
+import { clientDefaults } from './utils/DefaultValues.js'
+import { DCH_ERROR } from './utils/ERROR.js'
+import path from 'path'
+import fs from 'fs'
 
-class Client {
+export default class Client {
     /**
      * The heart of **DCHandler**.
      * 
@@ -43,9 +43,9 @@ class Client {
 
         this.DiscordClient = DiscordClient
 
-        this.EX_package = require(path.join(require.main.path, './', 'package.json'))
+        this.Main_package = JSON.parse(fs.readFileSync(path.join(process.argv[1], './', 'package.json')))
 
-        this.DCH_package = require('../package.json')
+        this.DCH_package = JSON.parse(fs.readFileSync('./package.json'))
 
         this._cli()
 
@@ -93,12 +93,13 @@ class Client {
      * @returns loaded options
      */
     loadConfig(config) {
-        const defaultConfigPath = path.join(require.main.path, './', `${clientDefaults.ConfigFile}.json`)
+        const defaultConfigPath = path.join(process.argv[1], './', `${clientDefaults.ConfigFile}.json`)
+
         var loadedOptions = {}
 
         //custom config.json
         if (typeof config === 'string') {
-            const customConfigPath = path.join(require.main.path, './', `${config}.json`)
+            const customConfigPath = path.join(process.argv[1], './', `${config}.json`)
             if (fs.existsSync(customConfigPath) == false) throw new DCH_ERROR(`Unable to locate config file, PATH: ${defaultConfigPath}`, '1', "MISSING_CONFIG")
             const result = this._loadJsonToOptions(customConfigPath, config)
             loadedOptions = { ...loadedOptions, ...result }
@@ -152,7 +153,7 @@ class Client {
     stats() {
         FParagraph.boxed().title('STATS')
                   .body(
-`${this.EX_package.name} v${this.EX_package.version}
+`${this.Main_package.name} v${this.Main_package.version}
 Default prefix: ${this.options.PREFIX}
 Command count: ${this.DiscordClient.commands.size}\nEvent count: ${this.DiscordClient.eventCount}
 Up time: ${this.DiscordClient.uptime}\nPing: ${this.DiscordClient.ws.ping} ms`
@@ -177,9 +178,9 @@ Up time: ${this.DiscordClient.uptime}\nPing: ${this.DiscordClient.ws.ping} ms`
         FParagraph.boxed().title('VERSION')
                   .body(
 `DCH: v${this.DCH_package.version}
-Discord.js: v${this.EX_package.dependencies["discord.js"]}
+Discord.js: v${this.Main_package.dependencies["discord.js"]}
 Node: ${process.version}
-Package ${this.EX_package.name}: v${this.EX_package.version}`
+Package ${this.Main_package.name}: v${this.Main_package.version}`
                  ).footer('VERSION')
         return this
     }
@@ -206,9 +207,9 @@ Package ${this.EX_package.name}: v${this.EX_package.version}`
                 FParagraph.boxed().title('VERSION')
                           .body(
 `DCH: v${this.DCH_package.version}
-Discord.js: v${this.EX_package.dependencies["discord.js"]}
+Discord.js: v${this.Main_package.dependencies["discord.js"]}
 Node: ${process.version}
-Package ${this.EX_package.name}: v${this.EX_package.version}`
+Package ${this.Main_package.name}: v${this.Main_package.version}`
                          ).footer('VERSION')
             }
         }
@@ -219,7 +220,6 @@ Package ${this.EX_package.name}: v${this.EX_package.version}`
  */
     _start(){
         FLogs.log('🚀 Starting bot...')
-
         this.Registry = new Registry(this.DiscordClient, this.options.commandPath, this.options)
 
         this.Registry.loadCommands()
@@ -238,13 +238,12 @@ Package ${this.EX_package.name}: v${this.EX_package.version}`
     _loadJsonToOptions(path, file){
         var config
         try {
-            config = require(path)
+            config = JSON.parse(fs.readFileSync(path))
             if (Object.keys(config).length !== 0) {
                 if (config.Handler){
                     this.addOptions(config.Handler)
                     config = config.Handler
-                } 
-                else this.addOptions(config)
+                } else this.addOptions(config)
                 FLogs.info(`Loaded ${file}.json into options.`)
             }
             else FLogs.warn(`${file}.json is empty.`)
@@ -256,4 +255,3 @@ Package ${this.EX_package.name}: v${this.EX_package.version}`
 
 }
 
-module.exports = Client

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     name: 'name name',
     aliases: [],
     execute(client, message, args) {

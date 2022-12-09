@@ -1,7 +1,7 @@
-const dayjs = require('dayjs')
-const chalk = require('chalk')
+import dayjs from 'dayjs'
+import chalk from 'chalk'
 
-class DCH_ERROR extends Error {
+export class DCH_ERROR extends Error {
     /**
      * Throws a new **DCH_ERROR**
      * 
@@ -20,7 +20,7 @@ class DCH_ERROR extends Error {
     }
 }
 
-class DCH_CMD_ERROR {
+export class DCH_CMD_ERROR {
     /**
      * Emits a **DCH_CMD_ERROR**.
      * 
@@ -33,7 +33,7 @@ class DCH_CMD_ERROR {
     }
 }
 
-class DCH_LOAD_ERROR {
+export class DCH_LOAD_ERROR {
     /**
      * Emits a **DCH_LOAD_ERROR**.
      * 
@@ -46,7 +46,7 @@ class DCH_LOAD_ERROR {
     }
 }
 
-class DCH_DB_ERROR {
+export class DCH_DB_ERROR {
     /**
      * Emits a **DCH_DB_ERROR**.
      * 
@@ -58,11 +58,3 @@ class DCH_DB_ERROR {
         return console.log(`${dayjs().format('HH:mm:ss') } ${chalk.hex('#FF0000')(`[DB] `)} ${message}`)
     }
 }
-
-
-module.exports = {
-    DCH_ERROR,
-    DCH_CMD_ERROR,
-    DCH_LOAD_ERROR,
-    DCH_DB_ERROR 
-}  

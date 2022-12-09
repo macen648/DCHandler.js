@@ -1,9 +1,11 @@
-const { DCH_DB_ERROR } = require('./utils/ERROR')
-const guildSchema = require('./models/guild')
-const mongoose = require("mongoose")
-const { FLogs } = require('formatted-logs')
+import FLogs from 'formatted-logs'
+import { DCH_DB_ERROR } from './utils/ERROR.js'
+import guildSchema from './models/guild.js'
 
-class db {
+import mongoose from 'mongoose'
+
+
+export default class db {
     /**
      * Wrapper for basic mongoose functions.
      * 
@@ -176,6 +178,3 @@ class db {
     }
 
 }
-
-
-module.exports = db

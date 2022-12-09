@@ -1,11 +1,12 @@
-const { DCH_LOAD_ERROR } = require('./utils/ERROR')
-const { formatMS } = require('./utils/formatMS')
-const Discord = require('discord.js')
-const path = require("path")
-const { FLogs } = require('formatted-logs')
-const fs = require("fs")
+import Discord from 'discord.js'
+import FLogs from 'formatted-logs'
+import formatMS from 'formatted-ms'
+import { DCH_LOAD_ERROR } from './utils/ERROR.js'
 
-class Registry {
+import path from 'path'
+import fs from 'fs'
+
+export default class Registry {
     /**
      * Loads **command** and **event** files.
      * 
@@ -59,10 +60,15 @@ class Registry {
 /**
  * @api private 
  */
-    registerCommand(file, _filePath, _this) {
-        const filePath = path.join(require.main.path, _filePath, file)
-
-        var command = require(filePath)
+    async registerCommand(file, _filePath, _this) {
+        const filePath = path.join(process.argv[1], _filePath, file)
+        
+        let commandFile = await import(`file://${filePath}`)
+        let command = ''
+        if(commandFile.default) command = commandFile.default
+        if(commandFile.command) command = commandFile.command
+        if(commandFile.Command) command = commandFile.Command
+        if(typeof command === 'undefined') command = {}
 
         try {
             if (Object.keys(command).length === 0){
@@ -91,8 +97,6 @@ class Registry {
         } catch (error) {
             new DCH_LOAD_ERROR(`Command file '${file.split('.')[0]}' Had a error loading.\n${error}`)
         }
-
-        delete require.cache[require.resolve(path.join(require.main.path, _filePath, file))]
 
         FLogs.addOptions({ hide: false })
 
@@ -130,11 +134,15 @@ class Registry {
 /**
  * @api private 
  */    
-    registerEvent(file, _filePath, _this) {
+    async registerEvent(file, _filePath, _this) {
+        const filePath = path.join(process.argv[1], _filePath, file)
         
-        const filePath = path.join(require.main.path, _filePath, file)
-
-        var event = require(filePath)
+        let eventFile = await import(`file://${filePath}`)
+        let event = ''
+        if(eventFile.default) event = eventFile.default
+        if(eventFile.event) event = eventFile.event
+        if(eventFile.Event) event = eventFile.Event
+        if(typeof event === 'undefined') event = {}
 
         try {
             _this.client.on(file.split('.')[0], event.bind(null, _this.client))
@@ -144,8 +152,6 @@ class Registry {
         } catch (error) {
             new DCH_LOAD_ERROR(`Event file '${file.split('.')[0]}' Had a error loading.\n${error}`)
         }
-
-        delete require.cache[require.resolve(path.join(require.main.path, _this.eventPath, file))]
 
         FLogs.addOptions({ hide: false })
         return event
@@ -190,5 +196,3 @@ class Registry {
         }
     }
 }
-
-module.exports = Registry

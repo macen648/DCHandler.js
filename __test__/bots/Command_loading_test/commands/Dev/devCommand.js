@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     name: 'devCommand',
     aliases: [],
     execute(client, message, args) {

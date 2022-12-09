@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     name: 'ping', 
     aliases: [],
     execute(client, message, args) {

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const guildSchema = mongoose.Schema({
     _id: {
@@ -15,4 +15,4 @@ const guildSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('guild', guildSchema)
+export default mongoose.model('guild', guildSchema)

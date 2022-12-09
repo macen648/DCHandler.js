@@ -1,4 +1,4 @@
-module.exports = {
+export const command = {
     name: 'ping', 
     aliases: [],
     execute(client, message, args) {

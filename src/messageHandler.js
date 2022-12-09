@@ -1,8 +1,8 @@
-const { DCH_CMD_ERROR } = require('./utils/ERROR')
-const { FLogs } = require('formatted-logs')
-const db = require('./db')
+import FLogs from 'formatted-logs'
+import db from './db.js'
+import { DCH_CMD_ERROR } from'./utils/ERROR.js'
 
-class MessageHandler{
+export default class MessageHandler {
     /**
      * Parses incoming **Discord** Client messages and handles them accordingly.
      * 
@@ -54,4 +54,3 @@ class MessageHandler{
 
 }
 
-module.exports = MessageHandler

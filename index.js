@@ -1,28 +1,43 @@
 // Made with love - Macen <3
 // https://github.com/macen648/DCHandler
-module.exports = {
-	// Core
-	HandlerClient: require('./src/Client'),
-	MessageHandler: require('./src/MessageHandler'),
-	Registry: require('./src/Registry'),
-	Ready: require('./src/Ready'),
-	db: require('./src/db'),
 
-	// Utils
-	formatMS: require('./src/utils/formatMS'),
-	
-	//Errors
-	DCH_CMD_ERROR: require('./src/utils/ERROR').DCH_CMD_ERROR,
-	DCH_DB_ERROR: require('./src/utils/ERROR').DCH_DB_ERROR,
-	DCH_LOAD_ERROR: require('./src/utils/ERROR').DCH_LOAD_ERROR,
-	DCH_ERROR: require('./src/utils/ERROR').DCH_ERROR,
+import fs from 'fs'
+const Package = JSON.parse(fs.readFileSync('./package.json'))
 
-	// Const
-	DefaultValues: require('./src/utils/DefaultValues'),
+import HandlerClient from './src/Client.js'
 
-	// Version
-	version: require('./package.json').version,
+import MessageHandler from './src/MessageHandler.js'
+import Registry from './src/Registry.js'
+import Ready from './src/Ready.js'
+import db from './src/db.js'
 
-	// Models
-	guild: require('./src/models/guild'),
-}
+import { DCH_CMD_ERROR, DCH_DB_ERROR, DCH_LOAD_ERROR, DCH_ERROR } from './src/utils/ERROR.js'
+
+import { clientDefaults } from './src/utils/DefaultValues.js'
+
+import guild from './src/models/guild.js'
+
+// Handler
+export default HandlerClient
+
+// Core
+
+export { MessageHandler } 
+export { Registry }
+export { Ready } 
+export { db }
+
+// // Errors
+export { DCH_CMD_ERROR }
+export { DCH_DB_ERROR }
+export { DCH_LOAD_ERROR } 
+export { DCH_ERROR }
+
+// Const
+export { clientDefaults as DefaultValues  }
+
+// Version
+export const version = Package.version
+
+// Models
+export { guild }

@@ -1,6 +1,6 @@
-const { FLogs } = require('formatted-logs')
+import FLogs from 'formatted-logs'
 
-class Ready{
+export default class Ready{
     /**
      * Bot **Console.Log** ready message.
      * 
@@ -20,4 +20,3 @@ class Ready{
     }
 }
 
-module.exports = Ready
