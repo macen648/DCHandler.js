@@ -56,7 +56,7 @@ Default values:
 
 Pass in an object.
 ```js
-const handler = new Handler.HandlerClient(client, { //options
+const handler = new HandlerClient(client, { //options
     commandPath: "commands", // Commands folder.
     eventPath: "events", // Commands folder.
     MongoURI: "mongodb://localhost:27017/test", // URI to connect to a mongoDB database
